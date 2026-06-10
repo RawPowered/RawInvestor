@@ -2,9 +2,12 @@
 
 **A local-first TCG investing workstation: buy, hold, grade, or sell — with math, not vibes.**
 
-[![Ecosystem](https://img.shields.io/badge/Ecosystem-RAW%20ENGINE-E42527)](https://rawgraded.com)
-![Status](https://img.shields.io/badge/Status-Shipping-2ea44f)
+[![Microsoft Store](https://img.shields.io/badge/Get%20it-Microsoft%20Store-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)](https://apps.microsoft.com/detail/9PGX48NMDWQT)
+[![Website](https://img.shields.io/badge/Web-rawgraded.com-1f6feb)](https://rawgraded.com/download/investor/)
+![Status](https://img.shields.io/badge/Status-Shipping%20%C2%B7%20Microsoft%20Store-2ea44f)
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local%20Processing-6f42c1)
+
+**RAW ENGINE's first official Microsoft Store listing** — install RawInvestor from the [Microsoft Store](https://apps.microsoft.com/detail/9PGX48NMDWQT) or use direct downloads from [rawgraded.com](https://rawgraded.com/download/investor/).
 
 One workspace blends PriceCharting, TCGplayer, and eBay sold data into per-card decision signals:
 
@@ -16,8 +19,10 @@ One workspace blends PriceCharting, TCGplayer, and eBay sold data into per-card 
 
 **Architecture:** desktop app with embedded browser workspace, a loopback-only local API, and a local database as the authoritative portfolio store. No vendor cloud sync, no account, no tracking.
 
+**Also available direct:** portable .zip and NSIS installer from [rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) — extension setup and user guide linked there.
+
 **Highlights:** Nebula 3D portfolio classification, deal-hunting Arsenal targets, sealed product EV, themed share graphics, streamer mode.
 
-> This repo is a public landing page. The product is closed-source; part of the [RAW ENGINE](https://rawgraded.com) suite.
+> This repo is a public landing page. The product is closed-source; part of the [RAW ENGINE](https://github.com/GatoGodMode/RawEngine) suite.
 
-**More:** [Full architecture breakdown on my profile](https://github.com/GatoGodMode)
+**More:** [How the engine works](https://github.com/GatoGodMode/RawEngine) · [Full architecture breakdown on my profile](https://github.com/GatoGodMode)
