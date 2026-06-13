@@ -7,6 +7,14 @@
 ![Status](https://img.shields.io/badge/Status-Shipping%20%C2%B7%20Microsoft%20Store-2ea44f)
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local%20Processing-6f42c1)
 
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9PGX48NMDWQT">
+    <img src="assets/microsoft-store-listing.png" alt="RawInvestor on Microsoft Store — market signals dashboard" width="90%">
+  </a>
+</p>
+
+<p align="center"><em>Published on Microsoft Store — blends eBay, TCGplayer, and PriceCharting with configurable windows and local-first architecture.</em></p>
+
 **RAW ENGINE's first official Microsoft Store listing** — install RawInvestor from the [Microsoft Store](https://apps.microsoft.com/detail/9PGX48NMDWQT) or use direct downloads from [rawgraded.com](https://rawgraded.com/download/investor/).
 
 One workspace blends PriceCharting, TCGplayer, and eBay sold data into per-card decision signals:
