@@ -38,7 +38,7 @@ This repository is a **deliberately scoped public source publication**: applicat
 |---|---|---|
 | **Collectors / traders** | Multi-source signals, grading EV, portfolio ROI — local-first, no vendor cloud account | [Product capabilities](#product-capabilities) · [How the software works](#how-the-software-works) · [Platform showcase](#platform-showcase) |
 | **Partners / marketplace reviewers** | Data read from user-initiated browser/extension sessions; no RawGraded cloud portfolio upload | [PII controls](#pii-credentials-and-data-leak-controls) · [Legal disclaimers](#legal-data-and-investment-disclaimers) |
-| **Engineers / security reviewers** | Loopback token auth, secret sanitization on meta API, publication boundary | [Security posture](#security-posture-at-a-glance) · [Threat model](#threat-model-and-trust-boundaries) · [Release integrity](#release-integrity) |
+| **Engineers / security reviewers** | Loopback token auth, secret sanitization on meta API, publication boundary | [Security posture](#security-posture-at-a-glance) · [Security architecture (visual)](#security-architecture-visual-layouts) · [Threat model](#threat-model-and-trust-boundaries) · [Release integrity](#release-integrity) |
 
 > Pick your lane above; everything below is organized for depth, not linear reading.
 
@@ -55,6 +55,69 @@ This repository is a **deliberately scoped public source publication**: applicat
 | **Extension boundary** | MV3 capture POSTs to loopback with `x-ext-token`; CORS allows extension origins only |
 | **Publication boundary** | No encrypted runtime keys, signing certs, user DB dumps, or production build output in this repo |
 | **Release integrity** | [`scripts/publish-preflight.cjs`](scripts/publish-preflight.cjs) enforces artifact policy before any public push |
+
+---
+
+<a id="security-architecture-visual-layouts"></a>
+
+## Security architecture (visual layouts)
+
+Diagrams for reviewers who want the control flow before reading source. **BACKEND ONLINE** and **SAVED** in the UI mean the **local loopback API** and **local SQLite** are reachable — not a vendor cloud sync.
+
+### Auth token lifecycle
+
+```mermaid
+flowchart TB
+  Electron[Electron main on launch]
+  Secrets[userData runtime-secrets.json]
+  Server[Express loopback API]
+  Ext[MV3 extension pcgr-connection.json]
+  Electron -->|"generate PCGR tokens"| Secrets
+  Secrets -->|"env inject"| Server
+  Secrets -->|"sync folder"| Ext
+  Ext -->|"x-ext-token"| Server
+  Electron -->|"x-pcgr-app-token"| Server
+```
+
+Implemented in [`rawengine/main.cjs`](rawengine/main.cjs) (runtime-secrets generation) and [`server/src/index.ts`](server/src/index.ts) (`requireExtToken`, `requireStoreWriteAuth`, `strictAuthMode`).
+
+### eBay secret sanitization
+
+```mermaid
+flowchart LR
+  Admin[Admin settings POST]
+  Meta[(portfolio meta SQLite)]
+  Sanitize[sanitizePortfolioMetaForClient]
+  UI[React client]
+  Admin --> Meta
+  Meta --> Sanitize
+  Sanitize -->|"ebayClientSecret stripped"| UI
+  Sanitize -->|"ebayClientSecretConfigured boolean only"| UI
+```
+
+Server-side strip before any meta JSON reaches the renderer — see `sanitizePortfolioMetaForClient()` in [`server/src/index.ts`](server/src/index.ts).
+
+### Packaged runtime boundary
+
+```mermaid
+flowchart LR
+  Installer[Signed installer out of band]
+  Encrypted[secure-runtime encrypted blob]
+  UserData[userData decrypted runtime]
+  Loopback["127.0.0.1 API only"]
+  Installer --> Encrypted
+  Encrypted -->|"decrypt at launch"| UserData
+  UserData --> Loopback
+```
+
+Encrypted runtime blobs and signing material are **not** in this assurance tree; reviewers evaluate the loopback + token patterns in source.
+
+| Layer | What reviewers verify | Source |
+|---|---|---|
+| **Loopback bind** | API defaults to `127.0.0.1:3001` | [`extension/pcgr-connection.json`](extension/pcgr-connection.json), Electron spawn |
+| **Token gate** | Production mutating routes need `PCGR_*` headers | [`server/src/index.ts`](server/src/index.ts) |
+| **Secret strip** | eBay client secret never returned to UI | `sanitizePortfolioMetaForClient()` |
+| **Publication** | No `.env`, DB dumps, or live tokens in git | [`scripts/publish-preflight.cjs`](scripts/publish-preflight.cjs) |
 
 ---
 
@@ -165,6 +228,12 @@ Shipped features (Microsoft Store listing and direct downloads):
 
 ## Platform showcase
 
+| Store | Quick Card signals | Streamer Mode | Master List |
+|:---:|:---:|:---:|:---:|
+| <a href="#platform-showcase"><img src="assets/microsoft-store-listing.png" alt="Microsoft Store listing" width="200"></a> | <a href="#platform-showcase"><img src="assets/showcase/quick-card-dashboard.png" alt="Quick Card dashboard market signals" width="200"></a> | <a href="#platform-showcase"><img src="assets/showcase/streamer-mode.png" alt="Streamer Mode card readout" width="200"></a> | <a href="#platform-showcase"><img src="assets/showcase/master-list-portfolio.png" alt="Master List portfolio EV table" width="200"></a> |
+
+*Click a bar to expand.*
+
 <details open>
 <summary><picture><img src="https://img.shields.io/badge/%E2%96%BC%20EXPAND-Microsoft%20Store%20%C2%B7%20published%20app-0078D4?style=for-the-badge" alt="Expand: Microsoft Store"></picture></summary>
 
@@ -195,6 +264,39 @@ First RAW ENGINE Microsoft Store listing · **Uses AI features** badge · instal
 <img src="assets/showcase/guide-capture-menu.png" alt="Edge Chrome capture extension menu" width="720">
 
 MV3 extension captures TCGplayer/eBay context from the user's own logged-in sessions and POSTs to loopback only.
+
+</details>
+
+<details>
+<summary><picture><img src="https://img.shields.io/badge/%E2%96%BC%20EXPAND-Quick%20Card%20dashboard%20%C2%B7%20market%20signals-1f6feb?style=for-the-badge" alt="Expand: Quick Card dashboard"></picture></summary>
+
+<br>
+
+<img src="assets/showcase/quick-card-dashboard.png" alt="Quick Card dashboard — Market Bias, Trend, Grade Edge, Price Sidebar" width="100%">
+
+Per-card decision surface: **Market Bias**, **Trend**, and **Grade Edge** cards with configurable RAW/GRADED windows (1D–90D), plus a floating Price Sidebar fed from eBay/TCGplayer/PriceCharting blends. Ties to [Product capabilities](#product-capabilities).
+
+</details>
+
+<details>
+<summary><picture><img src="https://img.shields.io/badge/%E2%96%BC%20EXPAND-Streamer%20Mode%20%C2%B7%20capture%20readout-6f42c1?style=for-the-badge" alt="Expand: Streamer Mode"></picture></summary>
+
+<br>
+
+<img src="assets/showcase/streamer-mode.png" alt="Streamer Mode — large card readout with price history chart" width="100%">
+
+Large-format card readout for stream capture: last sale, market, window average, gem-grade price tiers, and RAW eBay + TCG sales history — exported locally, no cloud upload path.
+
+</details>
+
+<details>
+<summary><picture><img src="https://img.shields.io/badge/%E2%96%BC%20EXPAND-Master%20List%20%C2%B7%20portfolio%20EV%20%26%20ROI-d29922?style=for-the-badge" alt="Expand: Master List"></picture></summary>
+
+<br>
+
+<img src="assets/showcase/master-list-portfolio.png" alt="Master List — portfolio-wide EV and ROI sorting" width="100%">
+
+Portfolio-scale view: sort and filter singles/sealed across sets with per-row EV, net profit, and ROI% — powered by the same deterministic math in [How the software works](#how-the-software-works).
 
 </details>
 

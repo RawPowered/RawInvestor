@@ -5,6 +5,7 @@
       <Section id="header" purpose="Product identity, MIT license, Microsoft Store badge, assurance publication notice"/>
       <Section id="three-readers" purpose="Collectors/traders, partners/marketplace, engineers/security routing table"/>
       <Section id="security-posture" purpose="Security posture at a glance table"/>
+      <Section id="security-architecture-visual" purpose="Auth token lifecycle, eBay secret sanitization, packaged runtime boundary mermaid diagrams and reviewer hero table"/>
       <Section id="threat-model" purpose="Mermaid trust boundaries and adversary assumptions"/>
       <Section id="pii-controls" purpose="PII, credentials, and data-leak controls"/>
       <Section id="how-it-works" purpose="Ingest, normalize, analyze, decide pipeline"/>
@@ -18,7 +19,9 @@
     <Folder path="rawengine" role="Electron shell, preload IPC, tabbed browser"/>
     <Folder path="extension" role="MV3 Edge/Chrome marketplace capture"/>
     <Folder path="scripts" role="publish-preflight and build utilities safe for public tree"/>
-    <Folder path="assets" role="Microsoft Store listing and UI showcase screenshots"/>
+    <Folder path="assets" role="Microsoft Store listing and UI showcase screenshots">
+      <Folder path="assets/showcase" role="Production UI screenshots and user-guide crops"/>
+    </Folder>
     <Folder path="EnVars" role="Structural and variable maps only"/>
   </Structure>
   <SecurityModules>
