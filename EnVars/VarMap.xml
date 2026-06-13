@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VarMap project="RawInvestor-Assurance" updated="2026-06-13">
+  <Publication>
+    <Var name="RAW_INVESTOR_MS_STORE_URL" value="https://apps.microsoft.com/detail/9PGX48NMDWQT" usedIn="README.md" purpose="Microsoft Store listing"/>
+    <Var name="RAW_INVESTOR_MS_STORE_ID" value="9PGX48NMDWQT" usedIn="README.md" purpose="Store product id"/>
+    <Var name="RAW_INVESTOR_DOWNLOAD_URL" value="https://rawgraded.com/download/investor/" usedIn="README.md" purpose="Direct download page"/>
+    <Var name="LOOPBACK_API_DEFAULT" value="http://127.0.0.1:3001" usedIn="extension/pcgr-connection.json,rawengine/main.cjs" purpose="Default local API base"/>
+  </Publication>
+  <EnvDocumentation only="true">
+    <Var name="EBAY_CLIENT_ID" usedIn="server/src/ebay.ts,Admin SettingsPanel" purpose="Optional eBay OAuth app id"/>
+    <Var name="EBAY_CLIENT_SECRET" usedIn="server portfolio meta" purpose="Never returned to client UI after sanitizePortfolioMetaForClient"/>
+    <Var name="PCGR_APP_TOKEN" usedIn="server/src/index.ts" purpose="Electron app write auth in production"/>
+    <Var name="PCGR_EXT_TOKEN" usedIn="server/src/index.ts,extension" purpose="MV3 capture upload auth"/>
+    <Var name="PCGR_MAINT_TOKEN" usedIn="server/src/index.ts" purpose="Maintenance/admin API auth"/>
+    <Var name="PCGR_ALLOWED_ORIGINS" usedIn="server/src/index.ts" purpose="Extra CORS allowlist"/>
+  </EnvDocumentation>
+</VarMap>

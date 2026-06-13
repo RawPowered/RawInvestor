@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "RawInvestor Tab Capture",
+  "description": "Send TCGPlayer, eBay, and PriceCharting tab data to RawInvestor on your PC. Works in Microsoft Edge and Chrome (MV3).",
+  "version": "0.1.5",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.tcgplayer.com/*",
+    "https://www.ebay.com/*",
+    "https://www.pricecharting.com/*",
+    "http://localhost:3001/*",
+    "http://localhost:*/*",
+    "http://127.0.0.1:*/*"
+  ],
+  "action": {
+    "default_title": "RawInvestor Capture",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.pricecharting.com/*",
+        "https://www.tcgplayer.com/*",
+        "https://www.ebay.com/*",
+        "https://m.ebay.com/*"
+      ],
+      "js": [
+        "pageActions.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["pcgr-connection.json", "botWallDetect.mjs"],
+      "matches": [
+        "https://www.tcgplayer.com/*",
+        "https://www.ebay.com/*",
+        "https://m.ebay.com/*"
+      ]
+    }
+  ]
+}

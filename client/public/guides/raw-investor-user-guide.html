@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<!--
+  Canonical user guide — web mirror: deploy/rawgraded-download/user-guide.html
+  Sync: deploy uses ./assets/ for images; canonical uses ../ri-guide/ (Vite reserves dist/assets for bundles).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raw Investor User Guide — RawGraded</title>
+  <link rel="icon" href="../assets/r-solo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff;
+      --bg-subtle: #f8f9fa;
+      --text: #202124;
+      --text-2: #5f6368;
+      --hairline: #dadce0;
+      --cta: #1a73e8;
+      --cta-hover: #1557b0;
+      --shadow-sm: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+      --radius: 12px;
+      --radius-lg: 20px;
+      --max: 52rem;
+      --tip-bg: #e8f0fe;
+      --tip-border: #c6dafc;
+      --warn-bg: #fef7e0;
+      --warn-border: #fdd663;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--cta); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--cta-hover); }
+    .dl-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 20px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .dl-banner-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .dl-banner .dl-logo { width: 28px; height: auto; display: block; flex-shrink: 0; }
+    .dl-banner .social a { margin-left: 12px; font-size: 14px; }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--hairline);
+      box-shadow: var(--shadow-sm);
+      padding: 16px 24px 18px;
+    }
+    .top-inner { max-width: var(--max); margin: 0 auto; }
+    .top .eyebrow {
+      margin: 0 0 4px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .top h1 {
+      margin: 0 0 12px;
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .search-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+    .search-wrap label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    #kw {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+    }
+    #kw::placeholder { color: var(--text-2); opacity: 0.8; }
+    #kw:focus {
+      outline: none;
+      border-color: var(--cta);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.25);
+    }
+    .search-meta { font-size: 12px; color: var(--text-2); width: 100%; }
+    main { max-width: var(--max); margin: 0 auto; padding: 24px 24px 48px; }
+    nav.toc {
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    nav.toc h2 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
+    }
+    nav.toc ul { margin: 0; padding: 0; list-style: none; }
+    nav.toc li { margin: 6px 0; }
+    nav.toc a { font-size: 14px; font-weight: 600; }
+    article.section {
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    article.section.hidden { display: none; }
+    article.section h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    article.section h3 {
+      margin: 20px 0 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    ol.steps { margin: 8px 0 0; padding-left: 1.35rem; }
+    ol.steps li { margin: 8px 0; }
+    .figure {
+      margin: 16px 0;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-subtle);
+    }
+    .figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .figure figcaption {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text-2);
+      border-top: 1px solid var(--hairline);
+      background: var(--bg);
+    }
+    .tip, .warning {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .tip { background: var(--tip-bg); border: 1px solid var(--tip-border); color: var(--text); }
+    .warning { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--text); }
+    .tip strong, .warning strong { color: var(--text); font-weight: 700; }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    table.compare th, table.compare td {
+      border: 1px solid var(--hairline);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.compare th {
+      background: var(--bg-subtle);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-2);
+    }
+    code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.88em;
+      background: var(--bg-subtle);
+      padding: 0.12em 0.4em;
+      border-radius: 6px;
+      border: 1px solid var(--hairline);
+    }
+    details.faq {
+      background: var(--bg);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      padding: 0 14px;
+    }
+    details.faq summary {
+      cursor: pointer;
+      font-weight: 600;
+      padding: 14px 0;
+      list-style: none;
+      color: var(--text);
+    }
+    details.faq summary::-webkit-details-marker { display: none; }
+    details.faq[open] summary { border-bottom: 1px solid var(--hairline); }
+    details.faq .a { padding: 12px 0 16px; color: var(--text-2); font-size: 14px; }
+    #keyword-index .keyword-index-body {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    footer.brand {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      border-top: 1px solid var(--hairline);
+      background: var(--bg-subtle);
+    }
+    footer.brand span { color: var(--text); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="dl-banner">
+    <span class="dl-banner-left">
+      <img class="dl-logo" src="../assets/r-solo.svg" width="28" height="32" alt="" decoding="async" />
+      <span>Raw Investor · <a href="https://rawgraded.com/download/">Download page</a></span>
+    </span>
+    <span class="social">
+      <a href="https://www.instagram.com/gatogodmode/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://x.com/GatoGodMode" target="_blank" rel="noopener noreferrer">X</a>
+    </span>
+  </div>
+
+  <header class="top">
+    <div class="top-inner">
+      <p class="eyebrow">Official user guide</p>
+      <h1>How to use Raw Investor</h1>
+      <div class="search-wrap">
+        <label for="kw">Find in guide</label>
+        <input type="search" id="kw" placeholder="Keywords: import, capture, backup, EV…" autocomplete="off" />
+        <span class="search-meta" id="search-status"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="toc" id="toc">
+      <h2>Jump to</h2>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#quick-start">Quick start — add a card</a></li>
+        <li><a href="#extension-first">Chrome / Edge extension (capture)</a></li>
+        <li><a href="#menus">Menus &amp; navigation</a></li>
+        <li><a href="#dashboards">Dashboards &amp; views</a></li>
+        <li><a href="#cards">Managing cards</a></li>
+        <li><a href="#import-export">Import &amp; export</a></li>
+        <li><a href="#pricecharting-collection">PriceCharting collection import</a></li>
+        <li><a href="#capture-menu">Captures &amp; the Capture menu</a></li>
+        <li><a href="#backups">Backups &amp; data files</a></li>
+        <li><a href="#settings">Settings &amp; Admin</a></li>
+        <li><a href="#portable">Portable vs installed</a></li>
+        <li><a href="#known-issues">Known issues</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#keyword-index">Keyword index</a></li>
+      </ul>
+    </nav>
+
+    <article class="section" id="overview" data-keywords="overview,start,beginner,workspace,nav,menu,raw investor,rawgraded">
+      <h2>Overview</h2>
+      <p><strong>Raw Investor</strong> helps you track Pokémon (and related) singles as grading investments: paste a PriceCharting link, pull prices and images, tune grade odds and fees, and compare expected value across your portfolio.</p>
+      <h3>What you see first</h3>
+      <ol class="steps">
+        <li>Open the app (browser dev build or Raw Investor desktop). Wait until the backend is online (the status badge should not show “offline”).</li>
+        <li>Use the <strong>workspace</strong> row under the header: Quick Card, Streamer Mode, Master List, Strategies, Insights, Star Chart, Arsenal, Admin, and <strong>User Guide</strong> (this document in the app).</li>
+        <li>Use <strong>Portfolio</strong> tabs (Singles / Sealed / All) to choose which kinds of items drive lists and the Quick Card picker.</li>
+      </ol>
+      <div class="tip"><strong>Tip</strong> — Your portfolio syncs to the server when the API is available. The Admin panel shows paths to SQLite, backup vault, and export tools.</div>
+    </article>
+
+    <article class="section" id="quick-start" data-keywords="quick start,add card,fetch,pricecharting link,singles,portfolio,save card,new card,import card">
+      <h2>Quick start — add a card</h2>
+      <ol class="steps">
+        <li>Open a portfolio-driven view: <strong>Master List</strong>, <strong>Quick Card</strong>, or <strong>Streamer Mode</strong>.</li>
+        <li>For a graded-EV single, choose <strong>Portfolio → Singles</strong> (listing type follows the tab).</li>
+        <li>Click <strong>Add Card</strong> (or the “+” entry point) to open the <strong>Card listing form</strong>.</li>
+        <li>Paste a valid <strong>PriceCharting product URL</strong> into <strong>Paste PriceCharting Link…</strong>, then click <strong>Fetch</strong>. The app fills prices and fields from the server scrape.</li>
+        <li>Adjust any draft fields, then click <strong>Save Card</strong>.</li>
+      </ol>
+      <figure class="figure">
+        <img src="../ri-guide/guide-portfolio-card-form.png" width="1200" height="675" alt="Card listing form with PriceCharting paste field and Fetch button" loading="lazy" decoding="async" />
+        <figcaption>Card listing form — paste a PriceCharting product link, then <strong>Fetch</strong>, then <strong>Save Card</strong>.</figcaption>
+      </figure>
+      <figure class="figure">
+        <img src="../ri-guide/guide-portfolio-fetch.png" width="1200" height="675" alt="Highlight on Fetch next to PriceCharting URL field" loading="lazy" decoding="async" />
+        <figcaption>Same form — <strong>Fetch</strong> runs the import for the pasted URL.</figcaption>
+      </figure>
+    </article>
+
+    <article class="section" id="extension-first" data-keywords="chrome extension,edge extension,mv3,load unpacked,developer mode,browser-extension-edge,capture,ebay,arsenal,127.0.0.1,app token,ext token,INSTALL-MICROSOFT-EDGE">
+      <h2>Chrome / Edge extension — primary capture (Windows)</h2>
+      <p>
+        For eBay and other flows where the embedded browser is limiting (for example some Google sign-in paths), load the
+        shipped <strong>unpacked MV3</strong> in your normal Chrome or Edge profile. Captures post to the same local API as the
+        desktop app and merge into <strong>portfolio.db</strong> for cards and <strong>Arsenal</strong>.
+      </p>
+      <ol class="steps">
+        <li>
+          Open the extension folder: <code>resources\browser-extension-edge</code> next to <code>RawInvestor.exe</code> (installed app,
+          portable EXE layout, or extracted <code>win-unpacked</code>). In the desktop app use <strong>Admin → Configuration → Chrome / Edge
+          capture extension → Open extension folder</strong> when that button is available.
+        </li>
+        <li>
+          Edge: enable <strong>Developer mode</strong> → <strong>Load unpacked</strong> → pick that folder. Chrome:
+          <code>chrome://extensions</code> → <strong>Load unpacked</strong>. Read <code>INSTALL-MICROSOFT-EDGE.txt</code> inside the folder for
+          Edge-focused steps.
+        </li>
+        <li>
+          Open the extension popup: set <strong>Server base</strong> to your Raw Investor API (typical local dev/desktop:
+          <code>http://127.0.0.1:3001</code>). Add optional <strong>Extension token</strong> / <strong>App token</strong> when the server is
+          configured for hardened headers — values must match.
+        </li>
+        <li>
+          Confirm the app shows the backend online, then use portfolio views and <strong>Arsenal</strong>; extension rows merge with the
+          same SQLite store as embedded captures.
+        </li>
+      </ol>
+      <div class="tip">
+        <strong>Sold comps (API)</strong> — Optional eBay <strong>application OAuth</strong> under Admin → Configuration powers aggregate
+        Marketplace Insights; it complements extension capture rather than replacing it.
+      </div>
+    </article>
+
+    <article class="section" id="menus" data-keywords="menu,workspace,portfolio tabs,file menu,capture menu,help,navigation,header">
+      <h2>Menus &amp; navigation</h2>
+      <p>Raw Investor mixes <strong>in-app navigation</strong> with the <strong>desktop window menu bar</strong> (Raw Investor on Windows).</p>
+      <h3>Workspace row</h3>
+      <p>The primary tabs under the title bar switch <em>views</em>: Quick Card, Streamer Mode, Master List, Strategies, Insights, Star Chart, Arsenal, Admin, User Guide. They do not change your underlying portfolio—only how you browse it.</p>
+      <h3>Portfolio tabs</h3>
+      <p><strong>All</strong>, <strong>Singles</strong>, and <strong>Sealed</strong> scope which cards drive lists, filters, and the single-card picker. If a card “disappears,” check you are not on Singles when it is stored as sealed (or the reverse).</p>
+      <h3>Desktop menu bar (Raw Investor desktop)</h3>
+      <p>Standard menus (<strong>File</strong>, <strong>Edit</strong>, <strong>View</strong>, …) control the window, zoom, and app shell. The <strong>Capture</strong> menu is documented below—it targets the <strong>embedded browser tabs</strong> (market sites), not the main React workspace.</p>
+    </article>
+
+    <article class="section" id="dashboards" data-keywords="dashboard,master list,quick card,streamer,strategies,insights,star chart,nebula,arsenal,admin,charts,ev,ticker">
+      <h2>Dashboards &amp; how they differ</h2>
+      <p>
+        The <strong>same filtered portfolio</strong> drives <strong>Master List</strong>, <strong>Insights</strong>, <strong>Strategies</strong>, and <strong>Star Chart</strong>—same cards and filters, different layouts and charts.
+        <strong>Quick Card</strong> and <strong>Streamer Mode</strong> focus on <strong>one</strong> card at a time.
+        <strong>Arsenal</strong> layers hunts/targets metadata on the same cards (saved with portfolio export).
+        <strong>Admin</strong> is configuration, storage paths, and maintenance—not portfolio EV analytics.
+      </p>
+      <p>They differ in <em>presentation</em>—like the same numbers on a spreadsheet vs. a chart vs. a single-card worksheet.</p>
+      <table class="compare">
+        <thead>
+          <tr><th>View</th><th>Best for</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Quick Card Dashboard</strong></td>
+            <td>Deep work on <strong>one</strong> card</td>
+            <td>Price sidebars, capture / refresh tools, expanded detail. Pick a card from the master scope.</td>
+          </tr>
+          <tr>
+            <td><strong>Streamer Mode</strong></td>
+            <td>Showing one card on stream</td>
+            <td>Same card story as Quick Card, tuned for presentation.</td>
+          </tr>
+          <tr>
+            <td><strong>Master List</strong></td>
+            <td>Table view of the whole portfolio</td>
+            <td>Sort, filter, bulk refresh, collections. The “source of truth” grid.</td>
+          </tr>
+          <tr>
+            <td><strong>Strategies</strong></td>
+            <td>Sell / hold planning</td>
+            <td>Bins, auto-populate, assign collections—operational workflow on filtered cards.</td>
+          </tr>
+          <tr>
+            <td><strong>Insights</strong></td>
+            <td>Portfolio analytics</td>
+            <td>Tabs: Top winners, EV chart, Market ticker, Nebula—<strong>same filters as Master List</strong>, different visuals.</td>
+          </tr>
+          <tr>
+            <td><strong>Star Chart</strong></td>
+            <td>Constellation map</td>
+            <td>Standalone <strong>Nebula</strong> visualization; click through to Quick Card.</td>
+          </tr>
+          <tr>
+            <td><strong>Arsenal</strong></td>
+            <td>Hunts &amp; targets</td>
+            <td>Watch-style workflows layered on your cards (imported with portfolio JSON).</td>
+          </tr>
+          <tr>
+            <td><strong>Admin</strong></td>
+            <td>Configuration &amp; maintenance</td>
+            <td>Fees, tokens, import/export, database jobs—not EV analytics.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="warning"><strong>Warning</strong> — If filters hide a card in Master List, it is also hidden from Insights / Strategies / Star Chart until you widen filters.</div>
+    </article>
+
+    <article class="section" id="cards" data-keywords="card,add,scrape,pricecharting,url,refresh,filter,sort,collection,grade,probability,ev,roi">
+      <h2>Managing &amp; using cards</h2>
+      <h3>Add a card (summary)</h3>
+      <ol class="steps">
+        <li>Click <strong>Add Card</strong>.</li>
+        <li>Paste a valid <strong>PriceCharting</strong> product URL and click <strong>Fetch</strong>.</li>
+        <li>Review scraped prices and image, adjust draft fields if needed, then save to your portfolio.</li>
+      </ol>
+      <h3>Day-to-day use</h3>
+      <ol class="steps">
+        <li>In <strong>Master List</strong>, use column headers and filters to slice by ROI, set, sealed vs single, etc.</li>
+        <li>Use per-card actions to <strong>refresh</strong> PriceCharting (and optional eBay / extension data where configured).</li>
+        <li>Open <strong>Quick Card</strong> for the focused layout: probabilities, fees, charts, and capture helpers.</li>
+        <li>Organize with <strong>Collections</strong> from the master view when you enable the collection manager.</li>
+      </ol>
+      <div class="tip"><strong>Tip</strong> — Global <strong>fees</strong> (grading, shipping, sale %) live in Admin → Configuration; per-card <strong>grade probabilities</strong> drive the EV model.</div>
+    </article>
+
+    <article class="section" id="import-export" data-keywords="import,export,json,ndjson,portfolio,collection,csv,zip,pricecharting collection,batch,merge">
+      <h2>Import &amp; export</h2>
+      <p>All import/export controls described here live under <strong>Admin → Configuration</strong> in the <strong>Portfolio &amp; backups</strong> area unless noted.</p>
+      <h3>Method A — Full portfolio JSON</h3>
+      <ol class="steps">
+        <li>Click <strong>Export portfolio</strong> to download a JSON snapshot (cards + meta such as fees, filters, collections, Arsenal when present).</li>
+        <li>Keep this file as your human-readable backup and for moving between machines.</li>
+        <li>Click <strong>Import portfolio</strong> and choose <code>.json</code> (or supported variants). Large card sets are applied in server batches.</li>
+      </ol>
+      <h3>Method B — Cards only (NDJSON)</h3>
+      <ol class="steps">
+        <li>Use <strong>Export cards (NDJSON)</strong> for one JSON object per line—great for huge libraries or partial merges.</li>
+        <li>Import the same shape via <strong>Import portfolio</strong> when the file is NDJSON lines (the app detects format).</li>
+      </ol>
+      <p>For the PriceCharting <strong>collection.csv / collection.zip</strong> workflow, use the dedicated steps in <a href="#pricecharting-collection">PriceCharting collection import</a> below.</p>
+      <div class="warning"><strong>Warning</strong> — Importing can <strong>overwrite</strong> matching card IDs from a snapshot. When in doubt, export first.</div>
+    </article>
+
+    <article class="section" id="pricecharting-collection" data-keywords="pricecharting collection,csv,zip,import collection file,admin,configuration,manual export import,skip if already,collection import,batch">
+      <h2>PriceCharting collection import</h2>
+      <p>Bulk-add cards from a PriceCharting export. Controls live under <strong>Admin → Configuration</strong>, in the <strong>Portfolio &amp; backups</strong> area, inside <strong>Manual export / import</strong>.</p>
+      <ol class="steps">
+        <li>In PriceCharting, export your collection as <code>collection.csv</code> or <code>collection.zip</code>.</li>
+        <li>In Raw Investor, open <strong>Admin → Configuration</strong> and scroll to <strong>Manual export / import</strong>.</li>
+        <li>Find the <strong>PRICECHARTING COLLECTION IMPORT</strong> panel. Optionally check <strong>Skip if already in collection</strong> (same PriceCharting URL or product ID) to avoid duplicates.</li>
+        <li>Click <strong>Import collection file</strong> and choose your export. The app searches, resolves product URLs, scrapes details, and creates cards.</li>
+        <li>When the run finishes, open <strong>Import Issues</strong> for failures; retry failed rows or export a retry CSV from the same panel when offered.</li>
+      </ol>
+      <figure class="figure">
+        <img src="../ri-guide/guide-admin-collection-import.png" width="1200" height="675" alt="Manual export import section with PriceCharting collection import and Import collection file button" loading="lazy" decoding="async" />
+        <figcaption>Admin → Configuration — <strong>Import collection file</strong> under PriceCharting collection import.</figcaption>
+      </figure>
+    </article>
+
+    <article class="section" id="capture-menu" data-keywords="capture menu,quick,deep,ctrl shift y,screenshot,extension,tcgplayer,ebay,pricecharting,browser tab,raw engine,quick fetch">
+      <h2>Captures &amp; the Capture menu</h2>
+      <h3>Three ways prices and live rows reach a card</h3>
+      <ol class="steps">
+        <li><strong>Card form</strong> — Paste a PriceCharting product URL and click <strong>Fetch</strong>. The server scrapes and merges into the draft card (see <a href="#quick-start">Quick start</a>).</li>
+        <li><strong>Capture menu (desktop)</strong> — Open a supported market site in an <strong>embedded browser tab</strong>, then run <strong>Capture active browser tab</strong>. The engine extracts listings or sales rows and posts them to your portfolio pipeline. You must be on a <strong>web / capture tab</strong>, not the main app workspace tab—if you see “Switch to a capture tab,” use <strong>Capture → Open …</strong> to open PriceCharting, eBay sold search, or TCGPlayer, then try again.</li>
+        <li><strong>Chrome / Edge MV3 extension</strong> — Load the unpacked extension shipped with the Windows app (see <a href="#extension-first">Chrome / Edge extension</a>) so toolbar captures post to <code>POST /api/ext/capture</code> and merge into your portfolio for Arsenal and charts.</li>
+      </ol>
+      <h3>Default vs deep capture</h3>
+      <p>Under <strong>Capture</strong> in the window menu bar:</p>
+      <ul>
+        <li><strong>Capture active browser tab</strong> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd>) — standard pass: faster, typical page coverage.</li>
+        <li><strong>Capture active browser tab (deep)</strong> — more thorough extraction (slower, more page interaction) when you need extra rows or a heavier pass on the same URL.</li>
+      </ul>
+      <p>Both run on whichever <strong>active</strong> embedded tab is focused. They are separate from in-app <strong>Quick Fetch</strong> (the automated multi-site refresh from Quick Card / Admin timing)—Quick Fetch orchestrates tabs internally; the Capture menu is for manual control of the current tab.</p>
+      <h3>Quick Fetch / Full fetch + extension</h3>
+      <p>Hybrid and Edge-guided Quick Fetch still rely on the <strong>Chrome / Edge capture extension</strong> when a market tab opens in Edge (or when you capture manually). Before starting <strong>Quick refresh</strong> or <strong>Full fetch</strong> in Quick Card:</p>
+      <ul>
+        <li>Extension popup shows <strong>Connected to</strong> your app URL (e.g. <code>http://127.0.0.1:3001</code>) and the security key is saved.</li>
+        <li>Match history depth: in-app <strong>Quick refresh</strong> → extension <strong>Quick (~100 sales)</strong>; in-app <strong>Full fetch</strong> → extension <strong>More history</strong>.</li>
+        <li>If the popup shows <strong>BOT_CHECK</strong> but the tab already shows normal sold results, use <strong>No challenge here — capture anyway</strong> (rare after recent detection fixes).</li>
+        <li>Incremental Quick refresh may skip eBay tabs when Marketplace Insights API returns new sales (Admin → API-first toggle); extension steps still apply for TCG and when the API lane does not satisfy.</li>
+      </ul>
+      <h3>Other Capture menu items</h3>
+      <ul>
+        <li><strong>Screenshot — visible area</strong> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>), <strong>full page (scroll stitch)</strong>, <strong>drag region</strong> — image capture utilities, not the same as price row extraction.</li>
+        <li><strong>Open TCGPlayer / eBay Sold Search / PriceCharting (new tab)</strong> — opens the site in a new embedded tab so you can navigate and then capture.</li>
+        <li><strong>Extension popup (toolbar)…</strong> — Reminder to use the toolbar puzzle menu and pin “Raw Investor Tab Capture” when using the companion extension flow.</li>
+      </ul>
+      <figure class="figure">
+        <img src="../ri-guide/guide-capture-menu.png" width="1200" height="675" alt="Capture menu expanded with capture tab, deep capture, screenshots, and open site links" loading="lazy" decoding="async" />
+        <figcaption>Desktop <strong>Capture</strong> menu — default vs deep tab capture, screenshots, and quick links to market sites.</figcaption>
+      </figure>
+    </article>
+
+    <article class="section" id="backups" data-keywords="backup,vault,sqlite,portfolio.db,rotating,restore,factory,json,pcgr,data dir">
+      <h2>Backups &amp; where data lives</h2>
+      <ol class="steps">
+        <li><strong>Live data</strong> — Cards live in SQLite under your data directory (<code>app-portfolio/portfolio.db</code>). Meta (fees, filters, collections, Arsenal) travels with that store.</li>
+        <li><strong>Automatic dated JSON</strong> — The app writes snapshots to a <strong>backup vault</strong> folder (separate from a factory reset of runtime data in desktop builds).</li>
+        <li><strong>Rotating backups</strong> — Admin → <strong>Database &amp; maintenance</strong> can run scheduled-style SQL/JSON copies (see on-screen stats after refresh).</li>
+        <li>Use <strong>Run rotating backup now</strong> when you want an immediate checkpoint before risky maintenance.</li>
+      </ol>
+      <p>Exact folders are shown under Configuration when the API is connected—use <strong>Open in Explorer</strong> style buttons where available.</p>
+      <div class="tip"><strong>Tip</strong> — For major version jumps, export portfolio JSON <em>before</em> updating, as release notes recommend.</div>
+    </article>
+
+    <article class="section" id="settings" data-keywords="settings,admin,configuration,fees,psa,token,google,cse,extension,quick fetch,timing,sync,diagnostics,database,maintenance">
+      <h2>Settings &amp; Admin panel</h2>
+      <p>Open <strong>Admin</strong> from the workspace row. Three tabs:</p>
+      <ol class="steps">
+        <li><strong>Configuration</strong> — Fee structure, PSA API token, Google Custom Search keys (optional buyer’s guide), <strong>Chrome / Edge capture extension</strong> (open bundled folder), extension “latest only” mode, Quick Fetch timing, portfolio default tab (Singles/Sealed/All), import/export, factory reset (desktop).</li>
+        <li><strong>Database &amp; maintenance</strong> — Capture DB stats, portfolio SQLite size/count, backup counts, rotating backup controls, eBay / PriceCharting maintenance jobs.</li>
+        <li><strong>Diagnostics</strong> — Capture pipeline insight for support.</li>
+      </ol>
+      <div class="tip"><strong>Tip</strong> — PSA token may stay in browser memory or persist depending on build flags—read the small print under the token field.</div>
+    </article>
+
+    <article class="section" id="portable" data-keywords="portable,exe,usb,appdata,userData,runtime,pcgr-runtime-data,PORTABLE_EXECUTABLE_DIR,backup vault,path">
+      <h2>Portable vs installed (Windows)</h2>
+      <h3>Installed / normal desktop build</h3>
+      <ol class="steps">
+        <li>Electron keeps profile data under your OS user application data area (conceptually <code>%AppData%</code> for the app).</li>
+        <li>The backup vault defaults under that profile unless you set <code>PCGR_BACKUPS_DIR</code>.</li>
+      </ol>
+      <h3>Portable build</h3>
+      <ol class="steps">
+        <li>When the launcher runs as a <strong>portable</strong> executable, Electron <code>userData</code> is redirected beside the EXE: <code>&lt;folder containing the EXE&gt;/pcgr-runtime-data</code>.</li>
+        <li>Your SQLite portfolio, extension captures, and default backup vault therefore move <strong>with the folder</strong> you copy to a USB drive.</li>
+        <li>Same UI and User Guide—only file paths differ. Use Admin → Configuration path rows to see exact directories on this PC.</li>
+      </ol>
+      <div class="warning"><strong>Warning</strong> — If you set custom environment paths for data or backups, the portable folder layout may differ—always verify in Admin stats.</div>
+    </article>
+
+    <article class="section" id="known-issues" data-keywords="known issues,sniper,ebay login,google sso,misclassify,graded raw,capture accuracy,bugs">
+      <h2>Known issues</h2>
+      <ul>
+        <li><strong>Sniper / eBay login</strong> — Logging into eBay via Google and other SSO providers is <strong>not working</strong> in some flows; a patch is in progress.</li>
+        <li><strong>Capture &amp; classification</strong> — Some data points may be wrong; listings can be <strong>misclassified</strong> (for example graded vs raw). Parser and capture improvements are ongoing.</li>
+      </ul>
+    </article>
+
+    <article class="section" id="faq" data-keywords="faq,help,error,offline,sync,lost,data">
+      <h2>FAQ</h2>
+      <details class="faq">
+        <summary>Why does the app say the backend is offline?</summary>
+        <div class="a">The UI cannot reach the API (e.g. <code>http://127.0.0.1:3001</code>). Start the bundled server / use <code>LAUNCH.bat</code> / wait until the launcher finishes booting.</div>
+      </details>
+      <details class="faq">
+        <summary>Will import wipe my whole portfolio?</summary>
+        <div class="a">Portfolio import merges snapshot fields; cards in the file replace matching IDs. Export a JSON backup before importing someone else’s file.</div>
+      </details>
+      <details class="faq">
+        <summary>NDJSON vs JSON export?</summary>
+        <div class="a">JSON is the full portfolio document. NDJSON is one card JSON per line—lighter for tooling and very large libraries.</div>
+      </details>
+      <details class="faq">
+        <summary>Insights looks empty but Master List has cards</summary>
+        <div class="a">Insights honors the same filters and portfolio kind scope. Clear filters or switch Singles/Sealed/All to match what you expect.</div>
+      </details>
+      <details class="faq">
+        <summary>Where is the User Guide in the desktop app?</summary>
+        <div class="a">Workspace nav <strong>User Guide</strong>, or menu <strong>Help → User Guide</strong> (focuses Raw Investor and opens this page).</div>
+      </details>
+    </article>
+
+    <article class="section" id="keyword-index" data-keywords="index,glossary,keywords,search">
+      <h2>Keyword index (for Ctrl+F)</h2>
+      <p class="keyword-index-body">
+        add card · admin · API · arsenal · backup · backup vault · capture · capture menu · collection import · configuration · CSV · database · deep capture · developer mode · diagnostics · ebay login · EV · export · extension · ext token · factory reset · fees · filters · Google CSE · google sso · import · insights · JSON · known issues · load unpacked · maintenance · master list · menus · MV3 · NDJSON · Nebula · portable · portfolio · PriceCharting · PSA token · Quick Card · quick fetch · quick start · ROI · rotating backup · sealed · singles · sniper · SQLite · Star Chart · streamer mode · strategies · sync · TCGPlayer · User Guide · win-unpacked · ZIP · 127.0.0.1
+      </p>
+    </article>
+  </main>
+
+  <footer class="brand">
+    Raw Investor · User guide · <span>RawGraded</span>
+  </footer>
+
+  <script>
+    (function () {
+      var input = document.getElementById("kw");
+      var status = document.getElementById("search-status");
+      var sections = Array.prototype.slice.call(document.querySelectorAll("article.section"));
+      function norm(s) { return (s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+      function run() {
+        var q = norm(input.value);
+        if (!q) {
+          sections.forEach(function (el) { el.classList.remove("hidden"); });
+          status.textContent = "Showing all sections.";
+          return;
+        }
+        var n = 0;
+        sections.forEach(function (el) {
+          var blob = norm(el.textContent) + " " + norm(el.getAttribute("data-keywords") || "");
+          var hit = blob.indexOf(q) !== -1;
+          el.classList.toggle("hidden", !hit);
+          if (hit) n++;
+        });
+        status.textContent = n ? "Showing " + n + " matching section(s)." : "No section matched—try another word from the index.";
+      }
+      input.addEventListener("input", run);
+      run();
+    })();
+  </script>
+</body>
+</html>

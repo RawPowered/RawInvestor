@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'" />
+  <title>Raw Investor — Portable license</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #0f172a;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sub { color: #64748b; font-size: 12px; margin-bottom: 12px; }
+    .scroll {
+      flex: 1;
+      overflow: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      margin-bottom: 12px;
+    }
+    .scroll h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin: 14px 0 6px; color: #334155; }
+    .scroll h2:first-child { margin-top: 0; }
+    .scroll p { margin: 0 0 8px; color: #475569; }
+    .links { font-size: 11px; margin-bottom: 10px; }
+    .links button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-right: 10px;
+      color: #2563eb;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: inherit;
+      font-family: inherit;
+    }
+    .row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 12px; }
+    .row input { margin-top: 3px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    button.primary {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      background: #0f172a;
+      color: #fff;
+    }
+    button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.ghost {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      color: #475569;
+    }
+    .pad { padding: 16px 18px 18px; max-width: 520px; margin: 0 auto; width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="pad">
+    <h1>Portable build — read &amp; agree</h1>
+    <p class="sub">You are running the <strong>portable</strong> Raw Investor executable. This agreement appears every launch.</p>
+    <div class="links">
+      Official:
+      <button type="button" id="lnkDl">rawgraded.com/download</button>
+      <button type="button" id="lnkPrivacy">Privacy Policy</button>
+      <button type="button" id="lnkIg">Instagram</button>
+      <button type="button" id="lnkX">X</button>
+    </div>
+    <div class="scroll">
+      <h2>Affiliation &amp; trademarks</h2>
+      <p><strong>Raw Investor</strong> is offered by <strong>RawGraded</strong>. Not affiliated with Pokémon, Nintendo, GAMEFREAK, Creatures Inc., eBay, PriceCharting, TCGPlayer, GemRate, PSA, BGS, CGC, or other third parties. Logos in the app are for UI recognition only.</p>
+      <h2>Terms of use</h2>
+      <p>By using this software you receive a personal, non-exclusive license. You may not distribute, redistribute, or modify the software or reverse engineer it except as law requires.</p>
+      <p>The software is provided “as is” without warranties. RawGraded is not liable for trading outcomes or third-party data.</p>
+      <p>For the full text, see the installer license or <strong>https://rawgraded.com/download/</strong> after install.</p>
+    </div>
+    <div class="row">
+      <input type="checkbox" id="ack" />
+      <label for="ack">I have read and agree to the terms above. I understand this portable build is not for redistribution.</label>
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" id="btnAgree" disabled>Agree &amp; continue</button>
+      <button type="button" class="ghost" id="btnExit">Exit</button>
+    </div>
+  </div>
+  <script>
+    const api = window.portableEulaApi;
+    const ack = document.getElementById("ack");
+    const btnAgree = document.getElementById("btnAgree");
+    ack.addEventListener("change", () => {
+      btnAgree.disabled = !ack.checked;
+    });
+    btnAgree.addEventListener("click", () => {
+      if (!ack.checked) return;
+      api.accept();
+    });
+    document.getElementById("btnExit").addEventListener("click", () => api.decline());
+    function ext(url) {
+      if (api && typeof api.openExternal === "function") void api.openExternal(url);
+    }
+    document.getElementById("lnkDl").addEventListener("click", () => ext("https://rawgraded.com/download/"));
+    document.getElementById("lnkPrivacy").addEventListener("click", () => ext("https://rawgraded.com/privacy-policy.html#raw-investor"));
+    document.getElementById("lnkIg").addEventListener("click", () => ext("https://www.instagram.com/gatogodmode/"));
+    document.getElementById("lnkX").addEventListener("click", () => ext("https://x.com/GatoGodMode"));
+  </script>
+</body>
+</html>

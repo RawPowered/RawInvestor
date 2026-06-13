@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Screenshot</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font: 13px system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: #1e293b;
+        border-bottom: 1px solid #334155;
+      }
+      .toolbar label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+      .toolbar input[type="color"] {
+        width: 36px;
+        height: 28px;
+        border: 1px solid #475569;
+        border-radius: 4px;
+        padding: 0;
+        background: #0f172a;
+        cursor: pointer;
+      }
+      .toolbar input[type="range"] {
+        width: 100px;
+      }
+      button {
+        border: 0;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        background: #334155;
+        color: #f1f5f9;
+      }
+      button.primary {
+        background: #2563eb;
+        color: #fff;
+      }
+      button.danger {
+        background: #7f1d1d;
+        color: #fecaca;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .wrap {
+        position: relative;
+        height: calc(100vh - 52px);
+        overflow: auto;
+        background: #020617;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 16px;
+      }
+      .stack {
+        position: relative;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+      }
+      canvas {
+        display: block;
+        max-width: none;
+      }
+      #draw {
+        position: absolute;
+        left: 0;
+        top: 0;
+        cursor: crosshair;
+      }
+      .status {
+        font-size: 11px;
+        color: #64748b;
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <label>Color <input type="color" id="color" value="#ef4444" /></label>
+      <label>Width <input type="range" id="width" min="1" max="24" value="4" /></label>
+        <button type="button" id="undo" disabled title="Undo stroke">Undo</button>
+      <button type="button" id="clear" class="danger" title="Clear annotations only">Clear ink</button>
+      <button type="button" id="copy" title="Copy flattened image (with drawings) to clipboard">Copy to clipboard</button>
+      <button type="button" id="save" class="primary">Save PNG…</button>
+      <span class="status" id="status">Loading…</span>
+    </div>
+    <div class="wrap" id="wrap">
+      <div class="stack" id="stack">
+        <canvas id="base"></canvas>
+        <canvas id="draw"></canvas>
+      </div>
+    </div>
+    <script>
+      (function () {
+        const base = document.getElementById("base");
+        const draw = document.getElementById("draw");
+        const baseCtx = base.getContext("2d");
+        const drawCtx = draw.getContext("2d");
+        const statusEl = document.getElementById("status");
+        const colorEl = document.getElementById("color");
+        const widthEl = document.getElementById("width");
+        const undoBtn = document.getElementById("undo");
+        const clearBtn = document.getElementById("clear");
+        const copyBtn = document.getElementById("copy");
+        const saveBtn = document.getElementById("save");
+
+        const undoStack = [];
+        let drawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function pushUndo() {
+          try {
+            undoStack.push(drawCtx.getImageData(0, 0, draw.width, draw.height));
+            if (undoStack.length > 35) undoStack.shift();
+          } catch (e) {
+            /* ignore */
+          }
+          undoBtn.disabled = undoStack.length === 0;
+        }
+
+        function loadImage(src) {
+          return new Promise(function (resolve, reject) {
+            const im = new Image();
+            im.onload = function () {
+              resolve(im);
+            };
+            im.onerror = function () {
+              reject(new Error("image"));
+            };
+            im.src = src;
+          });
+        }
+
+        async function compositeSlices(slices) {
+          const imgs = [];
+          for (var i = 0; i < slices.length; i++) {
+            imgs.push(await loadImage(slices[i]));
+          }
+          var w = 0;
+          for (var j = 0; j < imgs.length; j++) {
+            w = Math.max(w, imgs[j].naturalWidth || imgs[j].width);
+          }
+          var totalH = 0;
+          for (var k = 0; k < imgs.length; k++) {
+            totalH += imgs[k].naturalHeight || imgs[k].height;
+          }
+          base.width = w;
+          base.height = totalH;
+          var y = 0;
+          for (var m = 0; m < imgs.length; m++) {
+            var im = imgs[m];
+            var ih = im.naturalHeight || im.height;
+            baseCtx.drawImage(im, 0, y);
+            y += ih;
+          }
+        }
+
+        async function compositeTiles(tiles, tw, th) {
+          base.width = tw;
+          base.height = th;
+          baseCtx.fillStyle = "#020617";
+          baseCtx.fillRect(0, 0, tw, th);
+          for (var i = 0; i < tiles.length; i++) {
+            var t = tiles[i];
+            var im = await loadImage(t.dataUrl);
+            var dx = Number(t.dx) || 0;
+            var dy = Number(t.dy) || 0;
+            baseCtx.drawImage(im, dx, dy);
+          }
+        }
+
+        async function loadPayload(payload) {
+          statusEl.textContent = "Compositing…";
+          if (payload.mode === "slices" && Array.isArray(payload.slices) && payload.slices.length) {
+            await compositeSlices(payload.slices);
+          } else if (
+            payload.mode === "tiles" &&
+            Array.isArray(payload.tiles) &&
+            payload.tiles.length &&
+            Number(payload.width) > 0 &&
+            Number(payload.height) > 0
+          ) {
+            await compositeTiles(payload.tiles, Math.round(Number(payload.width)), Math.round(Number(payload.height)));
+          } else if (payload.dataUrl) {
+            var im = await loadImage(payload.dataUrl);
+            base.width = im.naturalWidth || im.width;
+            base.height = im.naturalHeight || im.height;
+            baseCtx.drawImage(im, 0, 0);
+          } else {
+            statusEl.textContent = "Nothing to show.";
+            return;
+          }
+          draw.width = base.width;
+          draw.height = base.height;
+          drawCtx.clearRect(0, 0, draw.width, draw.height);
+          undoStack.length = 0;
+          undoBtn.disabled = true;
+          statusEl.textContent =
+            base.width +
+            " × " +
+            base.height +
+            " px · draw on top, then Copy or Save (Ctrl+Shift+C / Ctrl+S)";
+        }
+
+        function getLocalXY(ev) {
+          const r = draw.getBoundingClientRect();
+          const sx = draw.width / r.width;
+          const sy = draw.height / r.height;
+          return {
+            x: (ev.clientX - r.left) * sx,
+            y: (ev.clientY - r.top) * sy,
+          };
+        }
+
+        draw.addEventListener("mousedown", function (e) {
+          if (e.button !== 0) return;
+          drawing = true;
+          pushUndo();
+          var p = getLocalXY(e);
+          lastX = p.x;
+          lastY = p.y;
+          drawCtx.strokeStyle = colorEl.value;
+          drawCtx.lineWidth = Number(widthEl.value) || 3;
+          drawCtx.lineCap = "round";
+          drawCtx.lineJoin = "round";
+          drawCtx.beginPath();
+          drawCtx.moveTo(lastX, lastY);
+        });
+
+        draw.addEventListener("mousemove", function (e) {
+          if (!drawing) return;
+          var p = getLocalXY(e);
+          drawCtx.lineTo(p.x, p.y);
+          drawCtx.stroke();
+          lastX = p.x;
+          lastY = p.y;
+        });
+
+        function endStroke() {
+          drawing = false;
+        }
+        draw.addEventListener("mouseup", endStroke);
+        draw.addEventListener("mouseleave", endStroke);
+
+        undoBtn.addEventListener("click", function () {
+          var prev = undoStack.pop();
+          undoBtn.disabled = undoStack.length === 0;
+          if (!prev) return;
+          drawCtx.putImageData(prev, 0, 0);
+        });
+
+        clearBtn.addEventListener("click", function () {
+          pushUndo();
+          drawCtx.clearRect(0, 0, draw.width, draw.height);
+        });
+
+        function compositeToDataUrl() {
+          var out = document.createElement("canvas");
+          out.width = base.width;
+          out.height = base.height;
+          var o = out.getContext("2d");
+          o.drawImage(base, 0, 0);
+          o.drawImage(draw, 0, 0);
+          return out.toDataURL("image/png");
+        }
+
+        copyBtn.addEventListener("click", async function () {
+          if (!window.screenshotEditor || typeof window.screenshotEditor.copyPngToClipboard !== "function") {
+            statusEl.textContent = "Copy requires the desktop app.";
+            return;
+          }
+          var url = compositeToDataUrl();
+          statusEl.textContent = "Copying…";
+          copyBtn.disabled = true;
+          saveBtn.disabled = true;
+          try {
+            var r = await window.screenshotEditor.copyPngToClipboard(url);
+            if (r && r.ok) {
+              statusEl.textContent = "Copied to clipboard — paste (Ctrl+V) into any app.";
+            } else {
+              statusEl.textContent = r && r.error ? r.error : "Copy failed.";
+            }
+          } catch (err) {
+            statusEl.textContent = String(err && err.message ? err.message : err);
+          } finally {
+            copyBtn.disabled = false;
+            saveBtn.disabled = false;
+          }
+        });
+
+        saveBtn.addEventListener("click", async function () {
+          var url = compositeToDataUrl();
+          statusEl.textContent = "Saving…";
+          saveBtn.disabled = true;
+          copyBtn.disabled = true;
+          try {
+            var r = await window.screenshotEditor.savePng(url);
+            if (r && r.ok) {
+              statusEl.textContent = "Saved: " + (r.filePath || "OK");
+            } else if (r && r.cancelled) {
+              statusEl.textContent = "Save cancelled.";
+            } else {
+              statusEl.textContent = r && r.error ? r.error : "Save failed.";
+            }
+          } catch (err) {
+            statusEl.textContent = String(err && err.message ? err.message : err);
+          } finally {
+            saveBtn.disabled = false;
+            copyBtn.disabled = false;
+          }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          var k = String(e.key || "").toLowerCase();
+          if ((e.ctrlKey || e.metaKey) && k === "s") {
+            e.preventDefault();
+            saveBtn.click();
+            return;
+          }
+          if ((e.ctrlKey || e.metaKey) && e.shiftKey && k === "c") {
+            e.preventDefault();
+            copyBtn.click();
+          }
+        });
+
+        window.screenshotEditor.onLoad(function (payload) {
+          loadPayload(payload || {}).catch(function (err) {
+            statusEl.textContent = String(err && err.message ? err.message : err);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

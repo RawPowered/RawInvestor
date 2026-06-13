@@ -1,0 +1,162 @@
+.pcgr-ext-demo {
+  --pcgr-demo-bg: #f3f4f6;
+  --pcgr-demo-sidebar: #ffffff;
+  --pcgr-demo-border: #e5e7eb;
+  --pcgr-demo-text: #1f2937;
+  --pcgr-demo-muted: #6b7280;
+  --pcgr-demo-accent: #2563eb;
+  --pcgr-demo-on: #16a34a;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+.pcgr-ext-demo-frame {
+  border: 1px solid var(--pcgr-demo-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--pcgr-demo-bg);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+.pcgr-ext-demo-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--pcgr-demo-sidebar);
+  border-bottom: 1px solid var(--pcgr-demo-border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pcgr-demo-text);
+}
+
+.pcgr-ext-demo-body {
+  display: flex;
+  min-height: 120px;
+}
+
+.pcgr-ext-demo-sidebar {
+  width: 42%;
+  min-width: 140px;
+  padding: 10px 12px;
+  background: var(--pcgr-demo-sidebar);
+  border-right: 1px solid var(--pcgr-demo-border);
+}
+
+.pcgr-ext-demo-main {
+  flex: 1;
+  padding: 12px;
+  font-size: 10px;
+  color: var(--pcgr-demo-muted);
+}
+
+.pcgr-ext-demo-dev-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--pcgr-demo-border);
+}
+
+.pcgr-ext-demo-dev-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pcgr-demo-text);
+}
+
+.pcgr-ext-demo-dev-label.pcgr-pulse-once {
+  animation: pcgrDevLabelPulse 1.2s ease-in-out 2;
+}
+
+.pcgr-ext-demo-toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: #cbd5e1;
+  flex-shrink: 0;
+  transition: background 0.35s ease;
+}
+
+.pcgr-ext-demo-toggle.pcgr-toggle-on {
+  background: var(--pcgr-demo-on);
+}
+
+.pcgr-ext-demo-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.35s ease;
+}
+
+.pcgr-ext-demo-toggle.pcgr-toggle-on .pcgr-ext-demo-knob {
+  transform: translateX(18px);
+}
+
+.pcgr-ext-demo-toggle.pcgr-animate-loop.pcgr-toggle-on .pcgr-ext-demo-knob {
+  animation: pcgrKnobSlide 2.8s ease-in-out infinite;
+}
+
+.pcgr-ext-demo-toggle.pcgr-animate-loop {
+  animation: pcgrTrackOffOn 2.8s ease-in-out infinite;
+}
+
+@keyframes pcgrKnobSlide {
+  0%,
+  18% {
+    transform: translateX(0);
+  }
+  45%,
+  72% {
+    transform: translateX(18px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pcgrTrackOffOn {
+  0%,
+  18% {
+    background: #cbd5e1;
+  }
+  45%,
+  72% {
+    background: var(--pcgr-demo-on);
+  }
+  100% {
+    background: #cbd5e1;
+  }
+}
+
+@keyframes pcgrDevLabelPulse {
+  0%,
+  100% {
+    color: var(--pcgr-demo-text);
+  }
+  50% {
+    color: var(--pcgr-demo-accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pcgr-ext-demo-toggle.pcgr-animate-loop,
+  .pcgr-ext-demo-toggle.pcgr-animate-loop .pcgr-ext-demo-knob {
+    animation: none;
+  }
+  .pcgr-ext-demo-toggle.pcgr-toggle-on {
+    background: var(--pcgr-demo-on);
+  }
+  .pcgr-ext-demo-toggle.pcgr-toggle-on .pcgr-ext-demo-knob {
+    transform: translateX(18px);
+  }
+  .pcgr-ext-demo-dev-label.pcgr-pulse-once {
+    animation: none;
+    color: var(--pcgr-demo-accent);
+  }
+}

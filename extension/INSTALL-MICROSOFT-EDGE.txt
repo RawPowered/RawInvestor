@@ -1,0 +1,64 @@
+Raw Investor — browser extension (Chrome + Microsoft Edge)
+==========================================================
+
+This folder is the unpacked MV3 extension ("Raw Investor Tab Capture").
+
+STABLE INSTALL PATH (recommended)
+---------------------------------
+Raw Investor copies this extension on every launch to a permanent folder:
+
+  %APPDATA%\Raw Investor\browser-extension-edge
+
+(Or your portable runtime folder\browser-extension-edge when using RawInvestor-portable.)
+
+Always use **Load unpacked** on THAT folder — not Program Files, not a temp zip extract,
+and not a folder that moves when you reinstall.
+
+Open the folder from Raw Investor: first-run wizard, Admin → Chrome / Edge capture extension,
+or "Open extension folder".
+
+Automatic connection
+--------------------
+When Raw Investor is running, the extension links automatically (no pasting keys).
+Open the extension popup — it should show **Raw Investor: Running**.
+
+Standalone zip distribution
+---------------------------
+Production builds may ship RawInvestor-TabCapture-extension-vX.Y.Z.zip.
+Extract once to a permanent location, or let the app populate the stable path above.
+
+Microsoft Edge — load unpacked
+--------------------------------
+1. Close extra Edge windows if you like; this does not affect your normal profile.
+2. Open Edge and go to:  edge://extensions
+3. Turn on **Developer mode** (left or bottom of the page, depending on Edge version).
+4. Click **Load unpacked**.
+5. Select the stable folder (see path above). Raw Investor → Open extension folder shows the exact path.
+6. Pin the extension (puzzle icon → Raw Investor Tab Capture → pin).
+7. Open the extension popup — status should show **Running** when Raw Investor is open on this PC.
+8. Sign in on eBay in this Edge profile, open the sold search you want, then capture from the popup.
+9. For Quick Fetch / Full fetch in Raw Investor: before capture, choose extension **Quick (~100 sales)** when the app uses **Quick refresh**, or **More history** when the app uses **Full fetch**.
+10. If the popup shows **BOT_CHECK** but the tab already shows normal results (no captcha), click **No challenge here — capture anyway**.
+
+Optional: from PowerShell (best-effort, may still need Developer mode):
+  powershell -ExecutionPolicy Bypass -File scripts\edge-load-extension.ps1
+
+Keep Developer mode enabled. If Edge removes the extension after an update, load unpacked again
+from the same stable folder path.
+
+Data path matches the embedded app: POST /api/ext/capture with the same JSON shape as Raw Investor’s
+capture menu. Portfolio merge uses the same URL keys as the app’s eBay sold search link for each card.
+
+eBay note
+---------
+If eBay challenges automation inside Raw Investor, use this extension in Edge (or Chrome) for manual
+captures while signed in; refresh the card in the app to pull the latest extension capture into charts.
+
+Google Chrome
+-------------
+chrome://extensions → Developer mode → Load unpacked → choose the same stable folder path.
+
+Uninstall
+---------
+Removing Raw Investor from Windows does not remove this browser extension or its saved popup settings.
+Remove it manually from edge://extensions or chrome://extensions if you no longer need it.

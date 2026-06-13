@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SysMap project="RawInvestor-Assurance" updated="2026-06-13">
+  <Structure>
+    <File path="README.md" role="Public assurance landing for security and engineering review">
+      <Section id="header" purpose="Product identity, MIT license, Microsoft Store badge, assurance publication notice"/>
+      <Section id="three-readers" purpose="Collectors/traders, partners/marketplace, engineers/security routing table"/>
+      <Section id="security-posture" purpose="Security posture at a glance table"/>
+      <Section id="threat-model" purpose="Mermaid trust boundaries and adversary assumptions"/>
+      <Section id="pii-controls" purpose="PII, credentials, and data-leak controls"/>
+      <Section id="how-it-works" purpose="Ingest, normalize, analyze, decide pipeline"/>
+      <Section id="product-capabilities" purpose="Shipped feature claims matching Store listing"/>
+      <Section id="platform-showcase" purpose="Screenshot gallery with EXPAND badges"/>
+      <Section id="release-integrity" purpose="publish-preflight.cjs gate"/>
+      <Section id="legal-disclaimers" purpose="Investment, third-party, marketplace, assurance scope disclaimers"/>
+    </File>
+    <Folder path="client" role="Vite React TypeScript renderer"/>
+    <Folder path="server" role="Express loopback API and portfolio SQLite"/>
+    <Folder path="rawengine" role="Electron shell, preload IPC, tabbed browser"/>
+    <Folder path="extension" role="MV3 Edge/Chrome marketplace capture"/>
+    <Folder path="scripts" role="publish-preflight and build utilities safe for public tree"/>
+    <Folder path="assets" role="Microsoft Store listing and UI showcase screenshots"/>
+    <Folder path="EnVars" role="Structural and variable maps only"/>
+  </Structure>
+  <SecurityModules>
+    <Module path="server/src/index.ts" controls="PCGR token auth, CORS, sanitizePortfolioMetaForClient"/>
+    <Module path="rawengine/main.cjs" controls="runtime-secrets.json generation, loopback API spawn"/>
+    <Module path="extension/pcgr-connection.json" controls="empty tokens in assurance repo"/>
+    <Script path="scripts/publish-preflight.cjs" controls="pre-push secret and artifact gate"/>
+  </SecurityModules>
+  <Constraints>
+    <Rule>Production encryption, signing, MSIX identity, and encrypted runtime blobs stay out of band.</Rule>
+    <Rule>Portfolio SQLite and scraped images are never published — server/data and server/images are gitkeep only.</Rule>
+  </Constraints>
+</SysMap>

@@ -1,0 +1,51 @@
+import type { StreamerSkinDefinition } from './types';
+
+const CHART_EBAY = '#16a34a';
+const CHART_TCG = '#2563eb';
+
+export const defaultDarkSkin: StreamerSkinDefinition = {
+  id: 'default-dark',
+  label: 'Default (dark)',
+  tokens: {
+    light: false,
+    chartEbay: CHART_EBAY,
+    chartTcg: CHART_TCG,
+    chartEbayAreaOpacity: 0.38,
+    chartTcgAreaOpacity: 0.32,
+    gridStroke: '#334155',
+    axisTick: '#94a3b8',
+    shell:
+      'rounded-3xl border border-slate-700/80 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 shadow-2xl',
+    subhead: 'text-slate-500',
+    kicker: 'text-slate-400',
+    navBtn: 'border-slate-600 bg-slate-800/80 text-slate-100 hover:bg-slate-700 disabled:opacity-35',
+    themeBtn: 'border-slate-600 bg-slate-800/80 text-slate-100 hover:bg-slate-700',
+    imgRing: 'ring-2 ring-slate-600/80 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.75)] bg-slate-800/50',
+    pickerBtn: 'bg-slate-800/90 border-slate-600 hover:bg-slate-800',
+    pickerPop: 'border-slate-600 bg-slate-900 shadow-2xl',
+    pickerInput: 'bg-slate-800 border-slate-600 text-slate-100 placeholder:text-slate-500',
+    pickerThumbBorder: 'border-slate-600',
+    pickerPlaceholderBg: 'bg-slate-700',
+    pickerPlaceholderBorder: 'border-slate-600',
+    pickerChevron: 'text-slate-500',
+    pickerDivide: 'divide-slate-700/80',
+    linkChip: 'border-slate-600 bg-slate-800/80 hover:bg-slate-700/90',
+    linkCaption: 'text-slate-400',
+    titleMain: 'text-white',
+    setSub: 'text-slate-400',
+    emptyTile: 'border-slate-700/80 bg-slate-800/40',
+    priceTile: 'border-slate-600/90 bg-slate-800/60 shadow-inner',
+    gradeTile: 'border-slate-600/90 bg-slate-800/50',
+    gradeLbl: 'text-slate-400',
+    priceNum: 'text-white',
+    sectionLbl: 'text-slate-500',
+    chartBox: 'border-slate-600/80 bg-slate-900/50',
+    chartMeta: 'text-slate-400',
+    legendTxt: 'text-slate-500',
+    deltaNeutral: 'text-slate-500',
+    listHover: 'hover:bg-slate-800',
+    listSelected: 'bg-blue-950/60',
+    noImg: 'text-slate-500',
+    showRadialGlow: true,
+  },
+};

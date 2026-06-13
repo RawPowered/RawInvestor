@@ -1,0 +1,8 @@
+{
+  "version": "extension-default",
+  "serverBase": "http://127.0.0.1:3001",
+  "extToken": "",
+  "appToken": "",
+  "writtenAt": "",
+  "_note": "RawInvestor updates this when the desktop app syncs the extension folder. Defaults work until the app connects."
+}

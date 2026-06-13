@@ -1,0 +1,40 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
+.cache/
+server/images/
+!server/images/.gitkeep
+server/data/
+!server/data/.gitkeep
+server/.pcgr-electron-rebuild-stash/
+*.tsbuildinfo
+secure-runtime/
+rawengine/secure-key.cjs
+Encrypted Release/
+playwright-runtime/
+rawengine/production/
+edge-extension-load/
+# Old local Electron drops (not the canonical rawengine/production output).
+release/
+
+# Assurance publication boundary
+assurance-publish/
+scripts/publish-assurance-export.mjs
+rawengine/production/
+secure-runtime/
+Encrypted Release/
+playwright-runtime/
+server/data/*
+!server/data/.gitkeep
+server/images/*
+!server/images/.gitkeep
+server/tmp-verify-data/
+server/tmp-*/
+server/.tmp-*/

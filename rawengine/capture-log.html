@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RawEngine capture control deck</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif;
+        font-size: 13px;
+        background: #0f172a;
+        color: #e2e8f0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        padding: 8px 12px;
+        background: #1e293b;
+        border-bottom: 1px solid #334155;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      header strong {
+        color: #f8fafc;
+      }
+      #path {
+        color: #94a3b8;
+        font-size: 11px;
+        word-break: break-all;
+      }
+      #deck {
+        flex-shrink: 0;
+        padding: 10px 12px;
+        background: #172554;
+        border-bottom: 1px solid #334155;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .pulse-row {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      #pulseAge {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .pulse-ok {
+        color: #4ade80;
+      }
+      .pulse-warn {
+        color: #fbbf24;
+      }
+      .pulse-bad {
+        color: #f87171;
+      }
+      #phaseLine {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        color: #cbd5e1;
+        line-height: 1.35;
+      }
+      #stallBanner {
+        display: none;
+        padding: 8px 10px;
+        border-radius: 6px;
+        background: rgba(251, 191, 36, 0.12);
+        border: 1px solid rgba(251, 191, 36, 0.35);
+        color: #fde68a;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      #stallBanner.show {
+        display: block;
+      }
+      .deck-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      button {
+        cursor: pointer;
+        border: 1px solid #475569;
+        background: #334155;
+        color: #f1f5f9;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      button:hover {
+        background: #475569;
+      }
+      button.secondary {
+        background: transparent;
+        color: #94a3b8;
+      }
+      #tabsGrid {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+      #tabsGrid th {
+        text-align: left;
+        color: #94a3b8;
+        padding: 4px 6px;
+        border-bottom: 1px solid #334155;
+      }
+      #tabsGrid td {
+        padding: 4px 6px;
+        border-bottom: 1px solid #1e293b;
+        vertical-align: middle;
+      }
+      #tabsGrid tr[data-kind="app"] td {
+        opacity: 0.45;
+      }
+      .tag {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+      .tag-ebay {
+        background: #14532d;
+        color: #bbf7d0;
+      }
+      .tag-tcg {
+        background: #1e3a5f;
+        color: #bfdbfe;
+      }
+      .tag-other {
+        background: #44403c;
+        color: #e7e5e4;
+      }
+      .loading-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 99px;
+        background: #38bdf8;
+        animation: blink 1s infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0.25;
+        }
+      }
+      #log {
+        flex: 1;
+        margin: 0;
+        padding: 10px 12px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        color: #cbd5e1;
+      }
+      .hint {
+        color: #64748b;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Capture control deck</strong>
+      <span class="hint">Live tail · heartbeat · reload tabs if capture stalls · extension Connected + Quick/More depth</span>
+      <span id="path"></span>
+    </header>
+    <section id="deck">
+      <div class="pulse-row">
+        <span>Log heartbeat:</span>
+        <span id="pulseAge" class="pulse-ok">—</span>
+        <span id="pulseHint" class="hint"></span>
+      </div>
+      <div id="phaseLine"><span class="hint">Waiting for first log line…</span></div>
+      <div id="stallBanner">
+        No new log lines for a while. If RawEngine looks stuck, <strong>Activate</strong> then
+        <strong>Reload</strong> the eBay or TCG tab below. That clears a hung page load; you may need to
+        <strong>run Quick Fetch again</strong> after reload (capture does not auto-resume).
+      </div>
+      <div class="deck-actions">
+        <button type="button" id="btnReady" title="Acknowledge tab is correct; resumes Quick Fetch when Require Ready is on">
+          Ready
+        </button>
+        <button type="button" id="btnPoll">Hunt log / refresh</button>
+        <button type="button" id="btnReveal" class="secondary">Reveal log file</button>
+      </div>
+      <table id="tabsGrid">
+        <thead>
+          <tr>
+            <th>Tab</th>
+            <th>Site</th>
+            <th>Load</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tabsBody"></tbody>
+      </table>
+    </section>
+    <pre id="log"></pre>
+    <script>
+      const pre = document.getElementById("log");
+      const pulseAge = document.getElementById("pulseAge");
+      const pulseHint = document.getElementById("pulseHint");
+      const phaseLine = document.getElementById("phaseLine");
+      const stallBanner = document.getElementById("stallBanner");
+      const tabsBody = document.getElementById("tabsBody");
+      const MAX_CHARS = 450000;
+      const STALL_SEC = 75;
+
+      let lastActivityWallMs = Date.now();
+      let lastLineFingerprint = "";
+      let heartbeatTimer = null;
+
+      function parseLogLine(text) {
+        const m = /^\[([^\]]+)\]\s*\[([^\]]+)\]\s*\[([^\]]+)\]\s*(.*)$/.exec(String(text || "").trim());
+        if (!m) return null;
+        return { ts: m[1], level: m[2], scope: m[3], rest: m[4] };
+      }
+
+      function touchActivityFromPayload(payload) {
+        lastActivityWallMs = Date.now();
+        if (payload && payload.scope != null) {
+          const msg = payload.message != null ? String(payload.message) : "";
+          const detail =
+            payload.detail != null
+              ? typeof payload.detail === "string"
+                ? payload.detail
+                : JSON.stringify(payload.detail)
+              : "";
+          phaseLine.textContent =
+            "[" + String(payload.scope) + "] " + msg + (detail ? " " + detail : "");
+        }
+      }
+
+      function touchActivityFromTextLine(line) {
+        const p = parseLogLine(line);
+        if (!p) return;
+        const iso = Date.parse(p.ts);
+        if (!Number.isNaN(iso)) lastActivityWallMs = iso;
+        else lastActivityWallMs = Date.now();
+        phaseLine.textContent = "[" + p.scope + "] " + p.rest;
+      }
+
+      function renderHeartbeat() {
+        const sec = Math.floor((Date.now() - lastActivityWallMs) / 1000);
+        pulseAge.textContent = sec + "s since last log activity";
+        pulseAge.classList.remove("pulse-ok", "pulse-warn", "pulse-bad");
+        if (sec < 15) pulseAge.classList.add("pulse-ok");
+        else if (sec < STALL_SEC) pulseAge.classList.add("pulse-warn");
+        else pulseAge.classList.add("pulse-bad");
+        pulseHint.textContent =
+          sec >= STALL_SEC
+            ? "(Consider tab reload — large eBay captures can pause 1–3 min)"
+            : "";
+        stallBanner.classList.toggle("show", sec >= STALL_SEC);
+      }
+
+      async function huntTail(api) {
+        try {
+          const tail = await api.readTail(400);
+          const lines = tail.split(/\r?\n/).filter((x) => x.length > 0);
+          const last = lines[lines.length - 1];
+          if (last) {
+            const fp = last.slice(0, 200);
+            if (fp !== lastLineFingerprint) {
+              lastLineFingerprint = fp;
+              touchActivityFromTextLine(last);
+            }
+          }
+          if (tail) {
+            const clipped =
+              tail.length > MAX_CHARS ? tail.slice(tail.length - MAX_CHARS) : tail;
+            pre.textContent = clipped + "\n";
+            pre.scrollTop = pre.scrollHeight;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function siteTag(key) {
+        const k = String(key || "other");
+        const cls =
+          k === "ebay" ? "tag-ebay" : k === "tcgplayer" ? "tag-tcg" : "tag-other";
+        return '<span class="tag ' + cls + '">' + k + "</span>";
+      }
+
+      async function refreshTabs(api) {
+        try {
+          const tabs = await api.listBrowserTabs();
+          if (!Array.isArray(tabs)) return;
+          tabsBody.innerHTML = "";
+          for (const t of tabs) {
+            const tr = document.createElement("tr");
+            tr.dataset.kind = t.kind || "";
+            const title = (t.title || "").slice(0, 42) || "(untitled)";
+            const shortUrl = (t.url || "").replace(/^https?:\/\//, "").slice(0, 56);
+            tr.innerHTML =
+              "<td>#" +
+              t.id +
+              " " +
+              (t.active ? "<strong>●</strong>" : "") +
+              "<br/><span class='hint'>" +
+              title +
+              "</span></td>" +
+              "<td>" +
+              siteTag(t.siteKey) +
+              "</td>" +
+              "<td>" +
+              (t.loading ? "<span class='loading-dot' title='loading'></span>" : "—") +
+              "</td>" +
+              "<td></td>";
+            const tdAct = tr.querySelector("td:last-child");
+            const b1 = document.createElement("button");
+            b1.type = "button";
+            b1.textContent = "Activate";
+            b1.disabled = t.kind === "app";
+            b1.addEventListener("click", async () => {
+              await api.activateBrowserTab(t.id);
+              await appendDeckNote(api, "User activated tab", { tabId: t.id });
+              refreshTabs(api);
+            });
+            const b2 = document.createElement("button");
+            b2.type = "button";
+            b2.textContent = "Reload";
+            b2.disabled = t.kind === "app" || t.locked;
+            b2.addEventListener("click", async () => {
+              await appendDeckNote(api, "User reload tab (kickstart)", { tabId: t.id });
+              await api.reloadBrowserTab(t.id);
+              refreshTabs(api);
+            });
+            tdAct.appendChild(b1);
+            tdAct.appendChild(document.createTextNode(" "));
+            tdAct.appendChild(b2);
+            tabsBody.appendChild(tr);
+          }
+        } catch (e) {
+          tabsBody.innerHTML =
+            "<tr><td colspan='4' class='hint'>Could not list tabs: " +
+            String(e.message || e) +
+            "</td></tr>";
+        }
+      }
+
+      async function appendDeckNote(api, message, detail) {
+        try {
+          await api.append({
+            scope: "capture-deck",
+            level: "info",
+            message,
+            detail,
+          });
+        } catch {
+          /* ignore */
+        }
+      }
+
+      async function boot() {
+        const api = window.captureLogView;
+        if (!api) {
+          pre.textContent = "captureLogView preload missing.";
+          return;
+        }
+        try {
+          const info = await api.getInfo();
+          if (info && info.path) document.getElementById("path").textContent = info.path;
+        } catch {
+          /* ignore */
+        }
+        try {
+          const tail = await api.readTail(400);
+          if (tail) {
+            pre.textContent = tail + "\n";
+            const lines = tail.split(/\r?\n/).filter((x) => x.length > 0);
+            const last = lines[lines.length - 1];
+            if (last) {
+              lastLineFingerprint = last.slice(0, 200);
+              touchActivityFromTextLine(last);
+            }
+          }
+        } catch (e) {
+          pre.textContent = String(e);
+        }
+
+        api.onPush((payload) => {
+          const line =
+            typeof payload?.text === "string" ? payload.text : JSON.stringify(payload);
+          touchActivityFromPayload(payload);
+          const cur = pre.textContent || "";
+          const next = cur.length ? cur + "\n" + line : line;
+          pre.textContent =
+            next.length > MAX_CHARS ? next.slice(next.length - MAX_CHARS) : next;
+          pre.scrollTop = pre.scrollHeight;
+          const fp = line.slice(0, 200);
+          if (fp !== lastLineFingerprint) lastLineFingerprint = fp;
+        });
+
+        document.getElementById("btnReady").addEventListener("click", async () => {
+          try {
+            const r = await api.signalScrapeReady();
+            await appendDeckNote(api, "Operator Ready (scrape gate)", { result: r });
+          } catch (e) {
+            await appendDeckNote(api, "Ready signal failed", { error: String(e.message || e) });
+          }
+        });
+        document.getElementById("btnPoll").addEventListener("click", () => huntTail(api));
+        document.getElementById("btnReveal").addEventListener("click", () => api.revealFile());
+
+        heartbeatTimer = setInterval(renderHeartbeat, 500);
+        renderHeartbeat();
+
+        setInterval(() => {
+          huntTail(api);
+        }, 2800);
+
+        setInterval(() => {
+          refreshTabs(api);
+        }, 2000);
+        refreshTabs(api);
+      }
+
+      boot();
+    </script>
+  </body>
+</html>

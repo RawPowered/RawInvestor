@@ -1,0 +1,317 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Raw Investor Capture</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        width: 340px;
+        margin: 0;
+        padding: 14px 14px 12px;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      h1 {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        letter-spacing: -0.02em;
+      }
+      .muted {
+        font-size: 12px;
+        color: #64748b;
+        margin: 0 0 12px;
+      }
+      .row { margin-bottom: 12px; }
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      input, select {
+        width: 100%;
+        padding: 9px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #fff;
+      }
+      input:focus, select:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      }
+      button.primary {
+        width: 100%;
+        padding: 11px 12px;
+        border: 0;
+        border-radius: 8px;
+        background: #4f46e5;
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button.primary:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      button.secondary {
+        width: 100%;
+        margin-top: 8px;
+        padding: 9px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #334155;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      button.linkish {
+        background: none;
+        border: 0;
+        color: #4f46e5;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0;
+        width: auto;
+        text-decoration: underline;
+      }
+      .panel.hidden { display: none !important; }
+      .hidden { display: none !important; }
+      .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      }
+      .main-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .main-head .app-status-line {
+        font-size: 13px;
+        color: #475569;
+        flex: 1;
+        min-width: 0;
+      }
+      .status-pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 999px;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .status-pill.running {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+      }
+      .status-pill.stopped {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+      }
+      .status-pill.checking {
+        background: #e2e8f0;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+      }
+      .seg {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .seg button {
+        flex: 1;
+        padding: 8px 6px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      @keyframes qfPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        50% { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.45); }
+      }
+      .qf-active-banner {
+        display: none;
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #eef2ff;
+        border: 1px solid #c7d2fe;
+        font-size: 11px;
+        font-weight: 600;
+        color: #3730a3;
+      }
+      .qf-active-banner.visible { display: block; }
+      .capture-flight-banner {
+        display: none;
+        margin: 0 0 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #ecfdf5;
+        border: 1px solid #6ee7b7;
+        font-size: 11px;
+        font-weight: 600;
+        color: #065f46;
+      }
+      .capture-flight-banner.visible { display: block; }
+      button.qf-pulse, .seg button.qf-pulse {
+        animation: qfPulse 1.1s ease-in-out infinite;
+      }
+      .seg button.active {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: #fff;
+      }
+      .actions-stack button {
+        margin-bottom: 8px;
+      }
+      .actions-stack button:last-child { margin-bottom: 0; }
+      button.ghost {
+        width: 100%;
+        padding: 9px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      details.more {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #64748b;
+      }
+      details.more summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: #475569;
+      }
+      details.more .row { margin-top: 10px; margin-bottom: 0; }
+      #status {
+        margin-top: 10px;
+        font-size: 11px;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        word-break: break-word;
+        min-height: 2.2em;
+        color: #0f766e;
+      }
+      .setup-actions { margin-top: 14px; }
+    </style>
+  </head>
+  <body>
+    <section id="panelSetup" class="panel card">
+      <h1>Connection</h1>
+      <p class="muted">Start <strong>Raw Investor</strong> on this PC — keys usually connect automatically. Use advanced fields only if support asks.</p>
+      <details class="more" style="margin-top:0" open>
+        <summary>Advanced connection</summary>
+        <div class="row">
+          <label for="serverBase">Service address (support)</label>
+          <input id="serverBase" placeholder="Leave blank for automatic" autocomplete="off" />
+        </div>
+        <div class="row">
+          <label for="extToken">Extension key (support)</label>
+          <input id="extToken" placeholder="Filled automatically when the app is running" autocomplete="off" />
+        </div>
+        <div class="row">
+          <label for="appToken">App key (optional)</label>
+          <input id="appToken" placeholder="Usually automatic" autocomplete="off" />
+        </div>
+      </details>
+      <div class="setup-actions">
+        <button type="button" id="finishSetupBtn" class="primary">Check connection</button>
+        <button type="button" id="backToMainBtn" class="secondary hidden">Back to capture</button>
+      </div>
+    </section>
+
+    <section id="panelMain" class="panel card hidden">
+      <div id="captureFlightBanner" class="capture-flight-banner" role="status" aria-live="polite"></div>
+      <div id="quickFetchBanner" class="qf-active-banner" role="status">
+        Quick Fetch active — match capture depth below, then use <strong>Capture this tab</strong> (puzzle icon on toolbar).
+      </div>
+      <div class="main-head">
+        <div class="app-status-line">
+          <strong>Raw Investor</strong>
+          <span id="appStatusPill" class="status-pill checking">Checking…</span>
+        </div>
+        <button type="button" id="changeConnectionBtn" class="linkish">Advanced</button>
+      </div>
+      <p class="muted" style="margin-top:0">Capture the tab you have open (TCGPlayer, eBay sold search, or PriceCharting).</p>
+      <p class="muted" style="margin:6px 0 0;font-size:10px;line-height:1.4">
+        <strong>Quick Fetch / Full fetch:</strong> keep Raw Investor <strong>Running</strong> on this PC.
+        Match depth: in-app <strong>Quick refresh</strong> → <strong>Quick (~100 sales)</strong> here; in-app <strong>Full fetch</strong> → <strong>More history</strong>.
+        If you see <strong>BOT_CHECK</strong> but the tab shows normal results, use <strong>No challenge here</strong> below.
+      </p>
+      <div class="row" style="margin-bottom:10px">
+        <label style="margin-bottom:6px">How much history</label>
+        <div class="seg" id="modeSeg">
+          <button type="button" data-mode="default" id="modeDefaultBtn">Quick (~100 sales)</button>
+          <button type="button" data-mode="deep" id="modeDeepBtn">More history</button>
+        </div>
+        <input type="hidden" id="captureMode" value="default" />
+      </div>
+      <div class="actions-stack">
+        <button type="button" id="captureBtn" class="primary">Capture this tab</button>
+        <button type="button" id="captureBothGradedBtn" class="ghost hidden">Capture both graded eBay tabs</button>
+        <button type="button" id="openFromAppBtn" class="ghost">Open card link from app</button>
+        <button type="button" id="openAndCaptureBtn" class="ghost">Open saved link &amp; capture</button>
+      </div>
+      <div id="botWallOverride" class="hidden" style="margin-top:10px;padding-top:10px;border-top:1px solid #e2e8f0">
+        <button type="button" id="captureIgnoreBotBtn" class="secondary">No challenge here — capture anyway</button>
+        <p class="muted" style="margin:6px 0 0;font-size:10px">Only if you see normal results (no captcha). Skips the bot check for this capture.</p>
+      </div>
+      <details class="more">
+        <summary>More options</summary>
+        <div class="row" style="margin-top:0">
+          <button type="button" id="reloadFromAppBtn" class="ghost">Reload connection from app</button>
+          <p class="muted" style="margin:6px 0 0;font-size:10px">After reinstall: Raw Investor Admin → Refresh connection file (or Set up extension), then Reload here. Re-enable the extension in your browser if needed.</p>
+        </div>
+        <div class="row">
+          <label for="targetUrl">Saved product link (optional)</label>
+          <input id="targetUrl" placeholder="TCGPlayer or eBay URL" />
+        </div>
+        <div class="row">
+          <label for="capturePerfPreset">Speed</label>
+          <select id="capturePerfPreset">
+            <option value="default">Normal</option>
+            <option value="fast">Faster (busier)</option>
+          </select>
+        </div>
+        <div class="row">
+          <label style="font-weight:500;text-transform:none;letter-spacing:0">
+            <input type="checkbox" id="ebayDualCaptureParallel" />
+            Capture both graded tabs in parallel (faster; eBay may throttle)
+          </label>
+        </div>
+      </details>
+    </section>
+
+    <div id="status" class="card" style="margin-top:10px;padding:10px 12px"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

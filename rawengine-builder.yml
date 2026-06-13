@@ -1,0 +1,58 @@
+appId: com.rawgraded.rawinvestor
+productName: Raw Investor
+copyright: "Copyright © 2026 RawGraded"
+artifactName: "RawInvestor-beta-${version}-${os}-${arch}.${ext}"
+asar: true
+asarUnpack:
+  # Encrypted blobs must live on real disk (ASAR-in-ASAR / cloud-sync paths can break reads).
+  - "secure-runtime/**"
+  - "server/node_modules/**"
+  - "server/images/**"
+  # RawEngine HTML/preload must load reliably from disk (sandbox + win-unpacked).
+  - "rawengine/**"
+directories:
+  output: rawengine/production
+  buildResources: build
+# Ship R brand icon beside the app so BrowserWindow can load it (EXE still embeds win.icon).
+extraResources:
+  - from: build
+    to: build
+    filter:
+      - icon.ico
+  - from: extension
+    to: browser-extension-edge
+  - from: playwright-runtime/browsers
+    to: playwright-browsers
+files:
+  - "rawengine/**"
+  - "!rawengine/production/**"
+  - "secure-runtime/**"
+  - "server/node_modules/**"
+  - "server/images/**"
+  - "package.json"
+extraMetadata:
+  main: "rawengine/main.cjs"
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: false
+  # Always per-machine: skips the install-mode page that can exit the wizard after uninstall/reinstall.
+  perMachine: true
+  shortcutName: Raw Investor
+  uninstallDisplayName: Raw Investor
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  installerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  license: build/license_en.html
+portable:
+  artifactName: "RawInvestor-portable-beta-${version}-${os}-${arch}.${ext}"
+win:
+  icon: build/icon.ico
+  executableName: RawInvestor
+  # Never require Authenticode for `build:all` / `beta:build` (see package.json unsigned env strip).
+  forceCodeSigning: false
+  signAndEditExecutable: false
+  target:
+    - dir
+    - nsis
+    - portable
