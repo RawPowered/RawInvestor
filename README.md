@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Microsoft Store](https://img.shields.io/badge/Get%20it-Microsoft%20Store-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)](https://apps.microsoft.com/detail/9PGX48NMDWQT)
-[![Author](https://img.shields.io/badge/GitHub-GatoGodMode-181717?logo=github)](https://github.com/GatoGodMode)
+[![Author](https://img.shields.io/badge/GitHub-RawPowered-181717?logo=github)](https://github.com/RawPowered)
 
 [rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) · **Public assurance repository** — architecture reference for security and engineering review
 
@@ -28,7 +28,7 @@ RawInvestor blends those sources into **per-card decision signals** on your own 
 
 This repository is a **deliberately scoped public source publication**: application logic, loopback API control patterns, extension capture boundaries, and client security behavior suitable for third-party review. **Production artifacts** (signed installers, encrypted runtime blobs, MSIX store identity, and operator signing credentials) ship through the [Microsoft Store](https://apps.microsoft.com/detail/9PGX48NMDWQT) and [rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) — not as secrets embedded in this tree.
 
-**Created by:** [Joseph Edwards (@GatoGodMode)](https://github.com/GatoGodMode) · MIT licensed
+**Created by:** [Joseph Edwards (@RawPowered)](https://github.com/RawPowered) · MIT licensed
 
 ---
 
@@ -336,4 +336,4 @@ npm test             # server + client Vitest
 
 See [`.env.example`](.env.example) for optional eBay and token variables. Packaged Electron builds require additional operator tooling not included in this assurance publication.
 
-**More:** [RAW ENGINE profile](https://github.com/GatoGodMode) · [RawGraded assurance repo](https://github.com/GatoGodMode/RawGraded)
+**More:** [RAW ENGINE profile](https://github.com/RawPowered) · [RawGraded assurance repo](https://github.com/RawPowered/RawGraded)
