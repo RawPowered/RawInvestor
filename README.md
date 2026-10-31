@@ -2,19 +2,19 @@
 
 # RawInvestor
 
-**Local-first TCG investing workstation — Market Bias, grading EV, and ROI forecasts from blended marketplace data.**
+**Local-first TCG investing workstation; Market Bias, grading EV, and ROI forecasts from blended marketplace data.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Microsoft Store](https://img.shields.io/badge/Get%20it-Microsoft%20Store-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)](https://apps.microsoft.com/detail/9PGX48NMDWQT)
 [![Author](https://img.shields.io/badge/GitHub-RawPowered-181717?logo=github)](https://github.com/RawPowered)
 
-[rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) · **Public assurance repository** — architecture reference for security and engineering review
+[rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) · **Public assurance repository**: architecture reference for security and engineering review
 
 </div>
 
 <p align="center">
   <a href="https://apps.microsoft.com/detail/9PGX48NMDWQT">
-    <img src="assets/microsoft-store-listing.png" alt="RawInvestor on Microsoft Store — market signals dashboard" width="90%">
+    <img src="assets/microsoft-store-listing.png" alt="RawInvestor on Microsoft Store; market signals dashboard" width="90%">
   </a>
 </p>
 
@@ -22,11 +22,11 @@
 
 ## Why this exists
 
-Deciding what to do with a raw Pokémon TCG card means juggling PriceCharting, TCGplayer, and eBay sold listings by hand — with no unified view, no grading expected-value math, and pricing distorted by scalper noise.
+Deciding what to do with a raw Pokémon TCG card means juggling PriceCharting, TCGplayer, and eBay sold listings by hand; with no unified view, no grading expected-value math, and pricing distorted by scalper noise.
 
 RawInvestor blends those sources into **per-card decision signals** on your own machine: Market Bias, Trend, Sales Strategy, Grading EV, and 90-day ROI forecasts.
 
-This repository is a **deliberately scoped public source publication**: application logic, loopback API control patterns, extension capture boundaries, and client security behavior suitable for third-party review. **Production artifacts** (signed installers, encrypted runtime blobs, MSIX store identity, and operator signing credentials) ship through the [Microsoft Store](https://apps.microsoft.com/detail/9PGX48NMDWQT) and [rawgraded.com/download/investor/](https://rawgraded.com/download/investor/) — not as secrets embedded in this tree.
+This repository is a **deliberately scoped public source publication**: application logic, loopback API control patterns, extension capture boundaries, and client security behavior suitable for third-party review. **Production artifacts** (signed installers, encrypted runtime blobs, MSIX store identity, and operator signing credentials) ship through the [Microsoft Store](https://apps.microsoft.com/detail/9PGX48NMDWQT) and [rawgraded.com/download/investor/](https://rawgraded.com/download/investor/); not as secrets embedded in this tree.
 
 **Created by:** [Joseph Edwards (@RawPowered)](https://github.com/RawPowered) · MIT licensed
 
@@ -36,7 +36,7 @@ This repository is a **deliberately scoped public source publication**: applicat
 
 | Reader | What this means for you | Start here |
 |---|---|---|
-| **Collectors / traders** | Multi-source signals, grading EV, portfolio ROI — local-first, no vendor cloud account | [Product capabilities](#product-capabilities) · [How the software works](#how-the-software-works) · [Platform showcase](#platform-showcase) |
+| **Collectors / traders** | Multi-source signals, grading EV, portfolio ROI; local-first, no vendor cloud account | [Product capabilities](#product-capabilities) · [How the software works](#how-the-software-works) · [Platform showcase](#platform-showcase) |
 | **Partners / marketplace reviewers** | Data read from user-initiated browser/extension sessions; no RawGraded cloud portfolio upload | [PII controls](#pii-credentials-and-data-leak-controls) · [Legal disclaimers](#legal-data-and-investment-disclaimers) |
 | **Engineers / security reviewers** | Loopback token auth, secret sanitization on meta API, publication boundary | [Security posture](#security-posture-at-a-glance) · [Security architecture (visual)](#security-architecture-visual-layouts) · [Threat model](#threat-model-and-trust-boundaries) · [Release integrity](#release-integrity) |
 
@@ -49,7 +49,7 @@ This repository is a **deliberately scoped public source publication**: applicat
 | Principle | Implementation |
 |---|---|
 | **Local-first default** | Portfolio SQLite, cached card images, and extension capture history stay on-device |
-| **Loopback API** | Express serves `127.0.0.1:3001` by default — not exposed as a public cloud service |
+| **Loopback API** | Express serves `127.0.0.1:3001` by default; not exposed as a public cloud service |
 | **Production token auth** | `PCGR_APP_TOKEN`, `PCGR_EXT_TOKEN`, `PCGR_MAINT_TOKEN` required when `NODE_ENV=production` |
 | **Secrets out of source** | eBay OAuth keys via env or Admin settings; **never returned** to the client on meta read |
 | **Extension boundary** | MV3 capture POSTs to loopback with `x-ext-token`; CORS allows extension origins only |
@@ -62,7 +62,7 @@ This repository is a **deliberately scoped public source publication**: applicat
 
 ## Security architecture (visual layouts)
 
-Diagrams for reviewers who want the control flow before reading source. **BACKEND ONLINE** and **SAVED** in the UI mean the **local loopback API** and **local SQLite** are reachable — not a vendor cloud sync.
+Diagrams for reviewers who want the control flow before reading source. **BACKEND ONLINE** and **SAVED** in the UI mean the **local loopback API** and **local SQLite** are reachable; not a vendor cloud sync.
 
 ### Auth token lifecycle
 
@@ -95,7 +95,7 @@ flowchart LR
   Sanitize -->|"ebayClientSecretConfigured boolean only"| UI
 ```
 
-Server-side strip before any meta JSON reaches the renderer — see `sanitizePortfolioMetaForClient()` in [`server/src/index.ts`](server/src/index.ts).
+Server-side strip before any meta JSON reaches the renderer; see `sanitizePortfolioMetaForClient()` in [`server/src/index.ts`](server/src/index.ts).
 
 ### Packaged runtime boundary
 
@@ -165,7 +165,7 @@ flowchart LR
 ### Out of scope
 
 - Marketplace account takeover on third-party sites (user browser responsibility).
-- Investment outcome guarantees — signals are estimates from public and user-captured listing data.
+- Investment outcome guarantees; signals are estimates from public and user-captured listing data.
 
 ---
 
@@ -174,7 +174,7 @@ flowchart LR
 | Data class | Storage | Client exposure |
 |---|---|---|
 | Portfolio cost basis, notes, card payloads | Local SQLite (`PCGR_DATA_DIR`) | Same machine only |
-| eBay OAuth app secret | Env or portfolio meta on server | **Stripped** — `sanitizePortfolioMetaForClient()` removes `ebayClientSecret`; exposes boolean `ebayClientSecretConfigured` only ([`server/src/index.ts`](server/src/index.ts)) |
+| eBay OAuth app secret | Env or portfolio meta on server | **Stripped**: `sanitizePortfolioMetaForClient()` removes `ebayClientSecret`; exposes boolean `ebayClientSecretConfigured` only ([`server/src/index.ts`](server/src/index.ts)) |
 | Extension capture payloads | Local SQLite + optional history tables | Loopback API; no cloud upload path in source |
 | Cached card images | `PCGR_IMAGES_DIR` filesystem | Served via `/images` static route on loopback |
 | PSA API token | User-supplied `x-psa-token` header | Optional; never embedded in repository |
@@ -188,10 +188,10 @@ Extension connection defaults ship with **empty tokens** in [`extension/pcgr-con
 
 ### Pipeline
 
-1. **Ingest** — Paste a PriceCharting URL for header-aware HTML scrape (column mapping by `<th>` text, not brittle IDs) + optional MV3 capture from TCGplayer/eBay tabs the user already has open.
-2. **Normalize** — Merge extension payloads into portfolio SQLite ([`mergeExtensionCaptureIntoPortfolio`](server/src/portfolioExtensionMerge.ts)).
-3. **Analyze** — Deterministic grading EV math, trend/regression across **1 / 7 / 30 / 90-day** windows, Market Bias / Sales Strategy / Nebula portfolio classification.
-4. **Decide** — 90-day ROI forecast with trend clamping; streamer-mode share graphics exported locally.
+1. **Ingest**: Paste a PriceCharting URL for header-aware HTML scrape (column mapping by `<th>` text, not brittle IDs) + optional MV3 capture from TCGplayer/eBay tabs the user already has open.
+2. **Normalize**: Merge extension payloads into portfolio SQLite ([`mergeExtensionCaptureIntoPortfolio`](server/src/portfolioExtensionMerge.ts)).
+3. **Analyze**: Deterministic grading EV math, trend/regression across **1 / 7 / 30 / 90-day** windows, Market Bias / Sales Strategy / Nebula portfolio classification.
+4. **Decide**: 90-day ROI forecast with trend clamping; streamer-mode share graphics exported locally.
 
 ### Grading EV math (deterministic)
 
@@ -204,7 +204,7 @@ EV = p10 * net10 + p9 * net9 + pFail * netFail
 ROI % = EV / totalInvested * 100
 ```
 
-Grade probabilities (`p10`, `p9`) are **per-card and user-tunable** — defaults are starting points, not predictions of PSA outcomes.
+Grade probabilities (`p10`, `p9`) are **per-card and user-tunable**: defaults are starting points, not predictions of PSA outcomes.
 
 **Proof in source:** Vitest suites under [`server/`](server/) (scraper/parser) and [`client/`](client/) (EV math).
 
@@ -214,15 +214,15 @@ Grade probabilities (`p10`, `p9`) are **per-card and user-tunable** — defaults
 
 Shipped features (Microsoft Store listing and direct downloads):
 
-- **Multi-source blend** — PriceCharting scrape + TCGplayer capture + optional eBay sold comps (BYOK application OAuth)
-- **Market Bias** — synthesized Buy / Hold / Sell guidance from buyer-side and seller-side analytics
-- **Trend** — regression slope, z-score vs. historical mean, day-over-day moves across configurable windows
-- **Sales Strategy** — SELL/HOLD with fair, strategic, and pushed price targets per channel
-- **Grading EV** — expected value across PSA 10 / 9 / fail branches vs. raw-flip break-even
-- **90-day ROI forecast** — realistic / best / worst cases with trend clamping on thin data
-- **Nebula 3D portfolio classification** — Buy / Sell / Hold / Sleeper / Climber / Dud / NGMI buckets
+- **Multi-source blend**: PriceCharting scrape + TCGplayer capture + optional eBay sold comps (BYOK application OAuth)
+- **Market Bias**: synthesized Buy / Hold / Sell guidance from buyer-side and seller-side analytics
+- **Trend**: regression slope, z-score vs. historical mean, day-over-day moves across configurable windows
+- **Sales Strategy**: SELL/HOLD with fair, strategic, and pushed price targets per channel
+- **Grading EV**: expected value across PSA 10 / 9 / fail branches vs. raw-flip break-even
+- **90-day ROI forecast**: realistic / best / worst cases with trend clamping on thin data
+- **Nebula 3D portfolio classification**: Buy / Sell / Hold / Sleeper / Climber / Dud / NGMI buckets
 - **Arsenal deal targets**, sealed product EV, themed share graphics, streamer mode
-- **Uses AI features** (Microsoft Store badge) — local analytics and signal synthesis over marketplace data captured in the user's own browser/extension context; **not** a cloud portfolio upload product
+- **Uses AI features** (Microsoft Store badge); local analytics and signal synthesis over marketplace data captured in the user's own browser/extension context; **not** a cloud portfolio upload product
 
 ---
 
@@ -272,9 +272,9 @@ MV3 extension captures TCGplayer/eBay context from the user's own logged-in sess
 
 <br>
 
-<img src="assets/showcase/quick-card-dashboard.png" alt="Quick Card dashboard — Market Bias, Trend, Grade Edge, Price Sidebar" width="100%">
+<img src="assets/showcase/quick-card-dashboard.png" alt="Quick Card dashboard; Market Bias, Trend, Grade Edge, Price Sidebar" width="100%">
 
-Per-card decision surface: **Market Bias**, **Trend**, and **Grade Edge** cards with configurable RAW/GRADED windows (1D–90D), plus a floating Price Sidebar fed from eBay/TCGplayer/PriceCharting blends. Ties to [Product capabilities](#product-capabilities).
+Per-card decision surface: **Market Bias**, **Trend**, and **Grade Edge** cards with configurable RAW/GRADED windows (1D-90D), plus a floating Price Sidebar fed from eBay/TCGplayer/PriceCharting blends. Ties to [Product capabilities](#product-capabilities).
 
 </details>
 
@@ -283,9 +283,9 @@ Per-card decision surface: **Market Bias**, **Trend**, and **Grade Edge** cards 
 
 <br>
 
-<img src="assets/showcase/streamer-mode.png" alt="Streamer Mode — large card readout with price history chart" width="100%">
+<img src="assets/showcase/streamer-mode.png" alt="Streamer Mode; large card readout with price history chart" width="100%">
 
-Large-format card readout for stream capture: last sale, market, window average, gem-grade price tiers, and RAW eBay + TCG sales history — exported locally, no cloud upload path.
+Large-format card readout for stream capture: last sale, market, window average, gem-grade price tiers, and RAW eBay + TCG sales history; exported locally, no cloud upload path.
 
 </details>
 
@@ -294,9 +294,9 @@ Large-format card readout for stream capture: last sale, market, window average,
 
 <br>
 
-<img src="assets/showcase/master-list-portfolio.png" alt="Master List — portfolio-wide EV and ROI sorting" width="100%">
+<img src="assets/showcase/master-list-portfolio.png" alt="Master List; portfolio-wide EV and ROI sorting" width="100%">
 
-Portfolio-scale view: sort and filter singles/sealed across sets with per-row EV, net profit, and ROI% — powered by the same deterministic math in [How the software works](#how-the-software-works).
+Portfolio-scale view: sort and filter singles/sealed across sets with per-row EV, net profit, and ROI%; powered by the same deterministic math in [How the software works](#how-the-software-works).
 
 </details>
 
